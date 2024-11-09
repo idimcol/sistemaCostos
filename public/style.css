@@ -1,0 +1,22 @@
+.card-body {
+    background: #a1a0a0;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.card {
+    border: none;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: url(https://www.acofi.edu.co/eiei2018/wp-content/uploads/2018/01/IDIMCOL.jpg);
+    background-size: contain;
+}

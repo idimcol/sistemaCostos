@@ -3,3 +3,10 @@
     {{ is_string($item) ? $item : $item['header'] }}
 
 </li>
+
+<style>
+    .nav-header {
+        background: #0026a4f7 !important;
+        color: #fff !important;
+    }
+</style>

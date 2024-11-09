@@ -10,12 +10,26 @@
     @else
 
         {{-- Use the default preloader content --}}
-        <img src="{{ asset(config('adminlte.preloader.img.path', 'vendor/adminlte/dist/img/AdminLTELogo.png')) }}"
-             class="img-circle {{ config('adminlte.preloader.img.effect', 'animation__shake') }}"
-             alt="{{ config('adminlte.preloader.img.alt', 'AdminLTE Preloader Image') }}"
-             width="{{ config('adminlte.preloader.img.width', 60) }}"
-             height="{{ config('adminlte.preloader.img.height', 60) }}"
-             style="animation-iteration-count:infinite;">
+        <style>
+            .preloader {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 100vh;
+                width: 100%;
+                background: linear-gradient(90deg, #000, #021e81) !important;
+            }
+        </style>
+            <div class="preloader">
+                <l-helix
+                    size="90"
+                    speed="2.5"
+                    color="#3a71e0"
+                >
+                </l-helix>
+            </div>
+    
+            <script type="module" src="https://cdn.jsdelivr.net/npm/ldrs/dist/auto/helix.js"></script>
 
     @endif
 
