@@ -18,6 +18,12 @@ class Ordenes_compraController extends Controller
     public function index()
     {
         $ordenesCompra = OrdenCompra::with('proveedor')->get();
+
+        foreach ($ordenesCompra as $orden) 
+        {
+            $orden->totalItems = $orden->items->count();
+        }
+
         return view('ordenesCompra.index', compact('ordenesCompra'));
     }
 
@@ -31,8 +37,7 @@ class Ordenes_compraController extends Controller
 
     public function create()
     {
-        $proveedores = Proveedor::orderBy('nombre', 'asc')->get();
-        
+        $proveedores = Proveedor::all();        
         return view('ordenesCompra.create', compact('proveedores'));
     }
 
@@ -48,9 +53,10 @@ class Ordenes_compraController extends Controller
                 'autorizacion' => 'required|string',
                 'iva' => 'required|numeric',
                 'items' => 'required|array',
+                'items.*.id' => 'required|exists:items_orden_compras,codigo',
                 'items.*.descripcion' => 'required|string',
-                'item.*.cantidad' => 'required|integer|min:1',
-                'item.*.precio' => 'required|numeric|min:0'
+                'items.*.cantidad' => 'required|integer|min:1',
+                'items.*.precio' => 'required|numeric|min:0'
             ]);
     
             DB::beginTransaction();
@@ -60,17 +66,15 @@ class Ordenes_compraController extends Controller
                 'fecha_orden' => $request->fecha_orden,
                 'elaboracion' => $request->elaboracion,
                 'autorizacion' => $request->autorizacion,
-                'subtotal' => $request->subtotal,
                 'iva' => $request->iva,
-                'total' => $request->total
             ]);
     
-            foreach ($request->input('items') as $itemData) {
-                $item = itemsOrdenCompras::firstOrCreate([
+            foreach ($request->items as $itemData) {
+                $item = ItemsOrdenCompras::firstOrCreate([
                     'descripcion' => $itemData['descripcion']
                 ]);
     
-                $ordenCompra->items()->attach($item->id, [
+                $ordenCompra->items()->attach($item->codigo, [
                     'cantidad' => $itemData['cantidad'],
                     'precio' => $itemData['precio']
                 ]);
@@ -91,16 +95,26 @@ class Ordenes_compraController extends Controller
 
     public function edit($id)
     {
-        $ordenCompra = OrdenCompra::with('proveedor')->findOrFail($id);
-
+        $ordenCompra = OrdenCompra::where('numero', $id)->firstOrFail();
         return view('ordenesCompra.edit', compact('ordenCompra'));
     }
 
     public function show($id)
     {
-        $ordenCompra = OrdenCompra::with('proveedor')->findOrFail($id);
+        $ordenCompra = OrdenCompra::where('numero', $id)->firstOrFail();
 
-        return view('ordenesCompra.show', compact('ordenCompra'));
+        $total = 0;
+
+        $itemsConSubtotales = $ordenCompra->items->map(function ($item) use (&$total) {
+            // Calcular el subtotal del artículo
+            $subtotal = $item->pivot->cantidad * $item->pivot->precio;
+            // Acumulando el subtotal al total general
+            $total += $subtotal;
+            // Agregar el subtotal al artículo
+            return $item->setAttribute('subtotal', $subtotal);
+        });
+
+        return view('ordenesCompra.show', compact('ordenCompra', 'itemsConSubtotales', 'total'));
     }
 
     public function update(Request $request, $id)
@@ -132,7 +146,7 @@ class Ordenes_compraController extends Controller
 
     public function destroy($id)
     {
-        $ordenCompra = OrdenCompra::with('proveedor')->findOrFail($id);
+        $ordenCompra = OrdenCompra::with('proveedor')->where('numero', $id)->findOrFail($id);
         $ordenCompra->delete();
 
         return redirect()->back()->with('success', 'Orden de compra eliminada exitosamente');

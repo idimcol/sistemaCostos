@@ -54,7 +54,7 @@ class SDPController extends Controller
 
         $idimcols = idimcol::all();
 
-        return view('SDP.ver', compact('sdp','total', 'idimcols'));
+        return view('SDP.ver', compact('sdp','total', 'idimcols', 'total'));
     }
 
     public function abrir($id)

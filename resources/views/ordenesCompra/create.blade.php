@@ -11,7 +11,7 @@
 @section('content')
     <div class="container">
         @if (session('error'))
-            <div id="success-message" class="alert alert-danger success-message" role="alert">
+            <div id="error-message" class="alert alert-danger success-message" role="alert">
                 <span class="block sm:inline">{{ session('error') }}</span>
             </div>
         @endif
@@ -23,7 +23,7 @@
                     <div class="form-group">
                         <label for="proveedor_id" class="form-label">proveedor</label>
                         <select name="proveedor_id" id="proveedor_id" class="form-select" required>
-                            <option selected="false" disabled>Seleccione un proveedor</option>
+                            <option>Seleccione un proveedor</option>
                             @foreach ( $proveedores as $proveedor )
                                 <option value="{{ $proveedor->nit }}">{{ $proveedor->nombre }}</option>
                             @endforeach
@@ -54,7 +54,7 @@
 
                     <div class="form-group">
                         <label for="iva" class="form-label">IVA (porcentaje en decimal)</label>
-                        <input type="namber" name="iva" placeholder="iva" class="form-control" required>
+                        <input type="namber" name="iva" value="0.19" placeholder="iva" class="form-control" required>
                     </div>
 
                     <div class="">
@@ -212,13 +212,13 @@
 
                                     data.forEach(item => {
                                         let li = document.createElement('li');
-                                        li.textContent = item.descripcion; // Mostrar la descripción del artículo
+                                        li.textContent = item.descripcion; 
                                         li.addEventListener('click', function() {
                                             let row = event.target.closest('.item-row');
 
-                                            // Completar los campos del artículo con los datos seleccionados
+                                            
                                             row.querySelector('input[name$="[descripcion]"]').value = item.descripcion;
-                                            row.querySelector('input[name$="[id]"]').value = item.id; // Asignar ID del artículo
+                                            row.querySelector('input[name$="[id]"]').value = item.codigo; 
 
                                             // Limpiar la lista de sugerencias después de seleccionar un artículo
                                             suggestionsContainer.innerHTML = '';

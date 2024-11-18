@@ -16,9 +16,7 @@ return new class extends Migration
             $table->string('numero')->unique();
             $table->string('proveedor_id');
             $table->date('fecha_orden');
-            $table->float('subtotal');
-            $table->float('iva');
-            $table->float('total');
+            $table->decimal('iva', 5, 2);
             $table->string('elaboracion');
             $table->string('autorizacion');
             $table->timestamps();

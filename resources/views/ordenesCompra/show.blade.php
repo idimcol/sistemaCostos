@@ -10,22 +10,22 @@
         <div class="card">
             <div class="card-body">
                 <div class="row">
-                    <div class="col-4">
+                    <div class="col-4 border p-2">
                         <img class="logo" src="{{ asset('images/logo.png') }}" alt="IDIMCOL">
                     </div>
-                    <div class="col-4">
+                    <div class="col-4 border p-2">
                         <h1><b>ORDEN DE COMPRA</b></h1><br>
                     </div>
-                    <div class="col-4">
+                    <div class="col-4 border p-2">
                         <h1><b>Numero:</b> </h1>
                         <h1><b>Fecha de entrega:</b> </h1>
                     </div>
                 </div>
-                <div class="col-12">
+                <div class="col-12 mt-4 border p-2">
                     <h1><b>Proveedor:</b></h1>
                 </div>
                 <div class="card-body">
-                    <table>
+                    <table class="table">
                         <thead>
                             <tr>
                                 <th>Código</th>
@@ -36,17 +36,19 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
+                            @foreach ($itemsConSubtotales as $item)
+                                <tr>
+                                    <td>{{ $item->codigo }}</td>
+                                    <td>{{ $item->descripcion }}</td>
+                                    <td>{{ $item->pivot->cantidad }}</td>
+                                    <td>{{ number_format($item->pivot->precio, 2, ',', '.') }}</td>
+                                    <td>{{ number_format($total, 2, ',', '.') }}</td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                     <hr>
-                    <div class="row">
+                    <div class="row border mt-4 p-2">
                         <div class="col-4">
                             <h1><b>Elaborado por: </b></h1>
                         </div>

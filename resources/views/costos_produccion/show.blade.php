@@ -139,7 +139,7 @@
                             </td>
 
                             <td class="border px-1">
-                                {{ number_format($totalCif, 2) }}
+                                
                                 <button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#materias_primas">
                                     Detalles
                                 </button>
@@ -151,7 +151,7 @@
                                 </button>
                             </td>
                             <td class="border px-1">
-                                
+                                {{ number_format($totalCif, 2, ',', '.') }}
                                 <button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#CIF">
                                     Detalles
                                 </button>

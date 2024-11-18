@@ -42,10 +42,20 @@
                                     <td>{{ $orden->numero }}</td>
                                     <td>{{ $orden->fecha_orden }}</td>
                                     <td>{{ $orden->proveedor->nombre ?? '' }}</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
+                                    <td>{{ $orden->totalItems }}</td>
+                                    <td>
+                                        <a href="{{ route('Ordencompras.show', $orden->numero) }}" class="btn btn-info">ver Orden</a>
+                                    </td>
+                                    <td>
+                                        <a href="{{ route('Ordencompras.edit', ['Ordencompra' => $orden->numero]) }}" class="btn btn-info">Editar</a>
+                                    </td>
+                                    <td>
+                                        <form action="{{ route('Ordencompras.destroy', ['Ordencompra' => $orden->numero]) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger" onclick="return confirm('¿Seguro que desea eliminar esta orden de compra?')">Eliminar</button>
+                                        </form>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>

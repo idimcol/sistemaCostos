@@ -18,8 +18,8 @@ class itemsOrdenCompras extends Model
 
     public function OrdenCompra()
     {
-        return $this->belongsToMany(OrdenCompra::class, 'items_orden_compras_cantidads', 'numero_orden_compra', 'item_codigo')
-                    ->withPivot('cantidad', 'precio')
-                    ->withTimestamps();
+        return $this->belongsToMany(OrdenCompra::class, 'items_orden_compras_cantidads', 'item_codigo', 'numero_orden_compra',  'codigo', 'numero')
+                ->withPivot('cantidad', 'precio')
+                ->withTimestamps();
     }
 }

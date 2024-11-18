@@ -12,23 +12,19 @@ trait codigoOrdenCompra
     }
     public static function generateUniquecodigoOrdenCompra()
     {
+        // Get the latest record based on 'numero'.
         $latestOrdenCompra = static::latest('numero')->first();
-            
-        if (!$latestOrdenCompra) {
-            $nextNumber = 1;
-        } else {
-            $lastCode = $latestOrdenCompra->numero;
-            $lastNumber = intval(substr($lastCode, 2));
-            $nextNumber = $lastNumber + 1;
-        }
 
-        $newCode = 'OC_' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+        // Calculate the next number based on the latest 'numero'.
+        $nextNumber = $latestOrdenCompra
+            ? intval(substr($latestOrdenCompra->numero, 3)) + 1
+            : 1;
 
-        // Asegurarse de que el código sea único
-        while (static::where('numero', $newCode)->exists()) {
-            $nextNumber++;
+        // Create the new code with padding.
+        do {
             $newCode = 'OC_' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
-        }
+            $nextNumber++;
+        } while (static::where('numero', $newCode)->exists());
 
         return $newCode;
     }

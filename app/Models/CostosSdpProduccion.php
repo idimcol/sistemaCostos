@@ -90,7 +90,6 @@ class CostosSdpProduccion extends Model
         $goi = $cif->GOI;
         $oci = $cif->OCI;
 
-
         // Calcular mano de obra directa sumando el sueldo y el valor del servicio
 
         $manoObraDirecta = $sueldo + $total_horas;

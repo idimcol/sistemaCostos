@@ -235,6 +235,7 @@ Route::middleware(['auth'])->group(function () {
     // compras
     Route::resource('Ordencompras', Ordenes_compraController::class);
     Route::get('/api/buscar-items-orden-compra', [Ordenes_compraController::class, 'BuscarItems']);
+    Route::get('Ordencompras/{Ordencompra}', [Ordenes_compraController::class, 'show'])->name('Ordencompras.show');
 
     // itemsOrdenCompra
     Route::post('/item-orden-compra/store', [ItemsOrdenCompraController::class, 'store'])->name('itemOrden.store');
