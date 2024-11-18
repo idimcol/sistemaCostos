@@ -44,7 +44,7 @@ class RemisionesDespacho extends Model
 
     public function items()
     {
-        return $this->belongsToMany(Items::class, 'items_despacho', 'remision_despacho_id', 'item_id')
+        return $this->belongsToMany(Item::class, 'items_despacho', 'remision_despacho_id', 'item_id')
                     ->withPivot('cantidad');
     }
 }

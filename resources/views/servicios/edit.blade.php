@@ -28,22 +28,12 @@
                                 <label class="block mb-2 text-sm font-medium text-gray-900" for="cantidad">valor por hora</label>
                                 <input type="number" name="valor_hora" id="valor_hora" value="{{ $servicio->valor_hora }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
                             </div>
-            
-                            <div>
-                                <label for="sdp_id" class="form-label">SDP</label>
-                                <button type="button" id="selectAllBtn" class="btn btn-secondary btn-sm mb-2 mt-2">Seleccionar todos</button>
-                                <select name="sdp_id[]" id="sdp_id" class="form-select" multiple>
-                                    @foreach ($sdps as $sdp)
-                                        <option value="{{ $sdp->numero_sdp }}"
-                                            {{ in_array($sdp->numero_sdp, $sdpSelect) ? 'selected' : '' }}
-                                            >{{ $sdp->numero_sdp }}-{{ $sdp->nombre }}</option>
-                                    @endforeach
-                                </select>
+
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="flex items-center justify-between mt-4">
+                <div class="flex items-center justify-center gap-2">
                     <button type="submit" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">Guardar</button>
                     <a href="{{ route('servicios.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition ease-in-out duration-150">Cancelar</a>
                 </div>
@@ -65,6 +55,12 @@
             integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
             crossorigin="anonymous"
         />
+    <style>
+        .select {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
 @stop
 
 @section('js')
@@ -85,29 +81,18 @@
         crossorigin="anonymous"
     ></script>
     <script>
-    $(document).ready(function() {
-        // Inicializar select2
-        $('#sdp_id').select2({
-            theme: 'bootstrap-5'
+        document.getElementById("selectAllBtn").addEventListener("click", function() {
+            const checkboxes = document.querySelectorAll(".sdp-checkbox");
+            const allSelected = Array.from(checkboxes).every(checkbox => checkbox.checked);
+    
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = !allSelected;
+            });
+    
+            // Cambiar el texto del botón dependiendo del estado
+            this.textContent = allSelected ? "Seleccionar todos" : "Deseleccionar todos";
         });
-
-        // Manejar el botón de seleccionar/deseleccionar todas las opciones
-        $('#selectAllBtn').on('click', function() {
-            let allSelected = $('#sdp_id option').length === $('#sdp_id').val().length;
-            
-            if (allSelected) {
-                // Deseleccionar todas si todas ya están seleccionadas
-                $('#sdp_id').val(null).trigger('change');
-                $(this).text('Seleccionar todos');
-            } else {
-                // Seleccionar todas las opciones
-                $('#sdp_id').val($('#sdp_id option').map(function() {
-                    return $(this).val();
-                }).get()).trigger('change');
-                $(this).text('Deseleccionar todos');
-            }
-        });
-    });
+    </script>
 </script>
 @stop
 

@@ -36,6 +36,11 @@ class SDP extends Model
         return $this->hasMany(TiemposProduccion::class, 'sdp_id', 'numero_sdp');
     }
 
+    public function costosProduccion()
+    {
+        return $this->hasMany(CostosSdpProduccion::class, 'sdp_id', 'numero_sdp');
+    }
+
     public function clientes()
     {
         return $this->belongsTo(Cliente::class, 'cliente_nit', 'nit');
@@ -48,7 +53,7 @@ class SDP extends Model
 
     public function articulos()
     {
-        return $this->belongsToMany(Articulo::class, 'articulo_sdp', 's_d_p_id', 'articulo_id')
+        return $this->belongsToMany(Articulo::class, 'articulo_sdp', 'sdp_id', 'articulo_id')
                     ->withPivot('cantidad', 'precio');
     }
 
@@ -61,7 +66,7 @@ class SDP extends Model
 
     public function servicios()
     {
-        return $this->belongsToMany(Servicio::class, 'servicio_s_d_p', 'sdp_id', 'servicio_id', 'numero_sdp', 'codigo')
+        return $this->belongsToMany(Servicio::class, 'servicios_s_d_p_s', 'sdp_id', 'servicio_id', 'numero_sdp', 'codigo')
                     ->withPivot('valor_servicio')
                     ->withTimestamps();
     }

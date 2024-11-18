@@ -25,7 +25,7 @@ class Servicio extends Model
 
     public function sdps()
     {
-        return $this->belongsToMany(SDP::class, 'servicio_s_d_p', 'servicio_id', 'sdp_id','codigo', 'numero_sdp')
+        return $this->belongsToMany(SDP::class, 'servicios_s_d_p_s', 'servicio_id', 'sdp_id','codigo', 'numero_sdp')
                     ->withPivot('valor_servicio')
                     ->withTimestamps();
     }

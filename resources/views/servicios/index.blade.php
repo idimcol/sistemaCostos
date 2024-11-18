@@ -10,9 +10,6 @@
 
 @section('content')
 <div class="py-12 tg">
-    <div class="">
-        <a href="{{ route('servicio.index') }}" class="btn btn-info mb-4">ver sdp</a>
-    </div>
     <div class="col-12 p">
         <a href="{{ route('servicio') }}" class="btn btn-primary">volver</a>
     </div>

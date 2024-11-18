@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\BonificacionAuxilio;
+use App\Models\Dia;
 use App\Models\Dias;
+use App\Models\nomina;
 use App\Models\Nominas;
 use App\Models\PaqueteNomina;
 use App\Models\Sueldo;
@@ -74,7 +76,7 @@ class NominaController extends Controller
             'auxilio_transporte' => 0,
         ]);
 
-        $dias = new Dias([
+        $dias = new Dia([
             'nomina_id' => $nomina->id,
             'trabajador_id' => $trabajador->id,
             'dias_trabajados' => 30,
@@ -170,7 +172,7 @@ class NominaController extends Controller
 
             $esAprendizSENA = $trabajador->cargo == 'APRENDIZ SENA';
 
-            $nomina = new Nominas([
+            $nomina = new nomina([
                 'trabajador_id' => $trabajador->id,
                 'mes' => $request->mes,
                 'año' => $request->año,
@@ -196,7 +198,7 @@ class NominaController extends Controller
             $nomina->save();
 
             // Crear el registro de días asociado
-            $dias = new Dias([
+            $dias = new Dia([
                 'nomina_id' => $nomina->id,
                 'trabajador_id' => $trabajador->id,
                 'dias_trabajados' => 30,
@@ -403,7 +405,7 @@ class NominaController extends Controller
 
         try {
             foreach ($cambios as $nominaId => $campos) {
-                $nomina = Nominas::findOrFail($nominaId);
+                $nomina = nomina::findOrFail($nominaId);
                 $diasCampos = ['dias_incapacidad', 'dias_vacaciones', 'dias_remunerados', 'dias_trabajados', 'dias_no_remunerados'];
                 $numerosCampos = ['bonificacion_auxilio','celular', 'anticipo', 'otro'];
                 $stringCampos = ['desde', 'a'];
@@ -516,7 +518,7 @@ class NominaController extends Controller
             12 => 'Diciembre',
         ];
 
-        $nomina = Nominas::with(['trabajador.sueldos', 'dias', 'paqueteNomina'])->findOrFail($id);
+        $nomina = nomina::with(['trabajador.sueldos', 'dias', 'paqueteNomina'])->findOrFail($id);
         
         return view('nomina.nomina', compact('nomina', 'meses'));
     }

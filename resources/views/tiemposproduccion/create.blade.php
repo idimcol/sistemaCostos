@@ -93,6 +93,10 @@
                             <label for="proseso_id">Código Servicio</label>
                             <input type="text" id="proseso_id" name="proseso_id" readonly placeholder="Código del servicio">
                         </div>
+
+                        <div class="mb-4">
+                            <input type="number" step="0.1" id="valorServicio"  name="valorServicio" placeholder="valor del servicio" class="form-control border-black" readonly>
+                        </div>
         
                         <div class="mb-4">
                             <label for="sdp_id">SDP</label>
@@ -103,8 +107,8 @@
                         
                             <label for="articulos_sdp">Items de SDP</label>
                             <div id="articulosContainer">
-                                <select name="articulos[articulo_id][]" id="articulos_sdp"  class="form-select" multiple>
-                                    
+                                <select name="articulo_id" id="articulos_sdp"  class="form-select" aria-placeholder="Seleccione el articulo..." required>
+                                    <option value="">Seleccione un item de la SDP...</option>
                                 </select>
                             </div>
                     </div>
@@ -175,18 +179,20 @@
                             <th>select</th>
                             <th>codigo</th>
                             <th>nombre</th>
+                            <th>valor del servicio</th>
                         </tr>
                     </thead>
                     <tbody id="serviciosTableBody">
-                        @foreach ($servicios as $servicio)
+                        @foreach($servicios as $servicio)
                         <tr>
                             <td>
                                 <input type="radio" name="proseso_select" id="proseso_select" 
                                 value="{{ $servicio->codigo }}" data-codigo="{{ $servicio->codigo }}" 
-                                data-nombre="{{ $servicio->nombre }}">
+                                data-nombre="{{ $servicio->nombre }}" data-valor="{{ $servicio->valor_hora }}">
                             </td>
                             <td>{{ $servicio->codigo }}</td>
                             <td>{{ $servicio->nombre }}</td>
+                            <td>{{ number_format($servicio->valor_hora, 2, ',', '.') }}</td>
                         </tr>
                         @endforeach
                     </tbody>
@@ -477,22 +483,24 @@
     });
 </script>
 <script>
-    // modal servicios
     document.addEventListener('DOMContentLoaded', function() {
         const modalServicios = document.getElementById('modalServicios');
         const btnSelectServicio = document.getElementById('selectServicio');
         const btnCerrarModal = modalServicios.querySelector('.cerrarModal');
         const inputNombre_servicio = document.getElementById('nombre_servicio');
         const inputProseso_id = document.getElementById('proseso_id');
+        const inputValorServicio = document.getElementById('valorServicio');
 
         btnSelectServicio.addEventListener('click', function() {
             const selectServicio = document.querySelector('input[name="proseso_select"]:checked');
             if (selectServicio) {
                 const codigo = selectServicio.dataset.codigo;
                 const nombre = selectServicio.dataset.nombre;
+                const valor = selectServicio.dataset.valor;
                 
                 inputProseso_id.value = codigo;
                 inputNombre_servicio.value = nombre;
+                inputValorServicio.value = valor;
                 
                 modalServicios.style.display = 'none';
             } else {
@@ -514,16 +522,6 @@
         const btnCerrarModal = modalSdp.find('.cerrarModal');
         const inputNumero_sdp = $('#sdp_id');
         const articulosSelect = $('#articulos_sdp');
-
-        // Asumimos que articulosSeleccionadosIds está definido globalmente
-        // let articulosSeleccionadosIds = [];
-
-        // Inicializar Select2 para selección múltiple
-        articulosSelect.select2({
-            placeholder: "Seleccione un artículo",
-            allowClear: true,
-            tags: true
-        });
 
         btnAbrirModalSDP.on('click', function() {
             modalSdp.show();
@@ -673,9 +671,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Inicialización de flatpickr para hora de inicio y fin
-            flatpickr("#hora_inicio", {
+        flatpickr("#hora_inicio", {
                 enableTime: true,
                 noCalendar: true,
                 dateFormat: "H:i:S",
@@ -683,7 +679,8 @@
                 enableSeconds: true,
                 minuteIncrement: 1,
             });
-            flatpickr("#hora_fin", {
+
+        flatpickr("#hora_fin", {
                 enableTime: true,
                 noCalendar: true,
                 dateFormat: "H:i:S",
@@ -691,69 +688,5 @@
                 enableSeconds: true,
                 minuteIncrement: 1,
             });
-    
-            const horaFinInput = document.getElementById('hora_fin');
-            const laboralDescanso = document.getElementById('laboral_descanso');
-            const decrementarBtn = document.getElementById('decrementar');
-            const incrementarBtn = document.getElementById('incrementar');
-            const minutosRestadosSpan = document.getElementById('minutos_restados');
-    
-            let tiempoOriginal = null;
-            let minutosRestados = 0;
-    
-            // Guardar la hora original de fin
-            function guardarTiempoOriginal() {
-                if (!tiempoOriginal && horaFinInput.value) {
-                    tiempoOriginal = horaFinInput.value;
-                }
-            }
-    
-            // Función para ajustar el tiempo
-            function ajustarTiempo(incremento) {
-                if (!laboralDescanso.checked) return;  // Solo ajustar si el checkbox está marcado
-    
-                guardarTiempoOriginal();
-    
-                minutosRestados += incremento;
-                minutosRestados = Math.max(minutosRestados, 0);  // No permitir valores negativos
-                minutosRestadosSpan.textContent = minutosRestados;
-    
-                if (!tiempoOriginal) return;
-    
-                let [horas, minutos, segundos] = tiempoOriginal.split(':').map(Number);
-                let totalSegundos = (horas * 3600) + (minutos * 60) + segundos - (minutosRestados * 60);
-    
-                totalSegundos = Math.max(totalSegundos, 0);  // Evitar valores negativos
-    
-                let nuevasHoras = Math.floor(totalSegundos / 3600) % 24;
-                let nuevosMinutos = Math.floor((totalSegundos % 3600) / 60);
-                let nuevosSegundos = totalSegundos % 60;
-    
-                let nuevaHoraFin = `${nuevasHoras.toString().padStart(2, '0')}:${nuevosMinutos.toString().padStart(2, '0')}:${nuevosSegundos.toString().padStart(2, '0')}`;
-                horaFinInput._flatpickr.setDate(nuevaHoraFin);
-            }
-    
-            // Restaurar la hora original al desmarcar el checkbox
-            laboralDescanso.addEventListener('change', function() {
-                if (!this.checked) {
-                    if (tiempoOriginal) {
-                        horaFinInput._flatpickr.setDate(tiempoOriginal);
-                    }
-                    minutosRestados = 0;
-                    minutosRestadosSpan.textContent = '0';
-                }
-            });
-    
-            // Listeners para los botones de incrementar y decrementar
-            decrementarBtn.addEventListener('click', function() {
-                ajustarTiempo(1);
-            });
-            
-            incrementarBtn.addEventListener('click', function() {
-                if (minutosRestados > 0) {
-                    ajustarTiempo(-1);
-                }
-            });
-        });
     </script>
 @stop

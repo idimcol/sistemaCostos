@@ -33,11 +33,16 @@ class Proveedor extends Model
 
     public function materiaPrimaDirecta()
     {
-        return $this->hasMany(MateriaPrima_directa::class);
+        return $this->hasMany(MateriaPrimaDirecta::class);
     }
 
     public function materiaPrimaIndirecta()
     {
-        return $this->hasMany(MateriaPrima_indirecta::class);
+        return $this->hasMany(MateriaPrimaDirecta::class);
+    }
+
+    public function OrdenCompra()
+    {
+        return $this->belongsTo(OrdenCompra::class, 'proveedor_id', 'nit');
     }
 }

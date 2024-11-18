@@ -45,21 +45,9 @@ class TiemposProduccion extends Model
         return $this->belongsTo(SDP::class, 'sdp_id', 'numero_sdp');
     }
 
-    public function Cif()
-    {
-        return $this->belongsTo(Cif::class, 'cif_id');
-    }
-
     public function costosProduccion()
     {
-        return $this->hasMany(CostosSdpProduccion::class, 'tiempo_produccion_id');
-    }
-
-    public function articulos()
-    {
-        return $this->belongsToMany(Articulo::class, 'articulo_tiempos_produccion', 'tiempos_produccion_id', 'articulo_id')
-                    ->withPivot('articulo_id', 'sdp_id')
-                    ->withTimestamps();
+        return $this->hasMany(CostosSdpProduccion::class, 'tiempos_id');
     }
 
     public function trabajador()
@@ -67,31 +55,15 @@ class TiemposProduccion extends Model
         return $this->hasOneThrough(Trabajador::class, Operativo::class);
     } 
 
-    public function valorSercicio()
+    public function valorServicio($valor_servicio)
     {
-        $servicio = $this->servicio;
-        Log::info('servicioCost obtenido', [$servicio->pluck('id')->toArray()]);
-
-        $servicioRelacionado = Servicio::where('codigo', $this->proseso_id)->first();
-
-        $valor_servicio = $servicioRelacionado->valor_hora;
-
+        Log::info('Valor del servicio obtenido', ['valor_servicio' => $valor_servicio]);
         return $valor_servicio;
     }
 
-    public function Calcularvalor_total_horas()
+    public function Calcularvalor_total_horas($valor_servicio)
     {
         try {
-            // Validar que la relación existe
-            $servicio = $this->servicio;
-            Log::info('Relaciones validadas con éxito.', [
-                'proseso_id' => $this->proseso_id,
-            ]);
-            
-            if (!$servicio) {
-                throw new Exception('No se pudo encontrar la relación requerida.');
-            }
-
             // Validar que las horas de inicio y fin no sean nulas y tengan el formato correcto
             if (empty($this->hora_inicio) || empty($this->hora_fin)) {
                 throw new Exception('Las horas de inicio o fin están vacías.');
@@ -104,18 +76,8 @@ class TiemposProduccion extends Model
             } catch (\Exception $e) {
                 throw new Exception('Formato de hora incorrecto: ' . $e->getMessage());
             }
-
             // Calcular las horas trabajadas
             $horas = $inicio->diffInHours($fin);
-
-            // Obtener el servicio relacionado
-            $servicioRelacionado = Servicio::where('codigo', $this->proseso_id)->first();
-            if (!$servicioRelacionado) {
-                throw new Exception('No se pudo encontrar el servicio con el código especificado.');
-            }
-
-            // Obtener el valor del servicio
-            $valor_servicio = $servicioRelacionado->valor_hora;
 
             // Calcular el total de horas
             $total_horas = $valor_servicio * $horas;

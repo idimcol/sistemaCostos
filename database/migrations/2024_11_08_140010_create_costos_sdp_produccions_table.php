@@ -15,6 +15,9 @@ return new class extends Migration
             $table->id();
             $table->integer('sdp_id');
             $table->unsignedBigInteger('tiempos_id');
+            $table->string('operario');
+            $table->string('articulo');
+            $table->string('servicio');
             $table->decimal('mano_obra_directa', 20, 2);
             $table->decimal('valor_sdp', 20, 2);
             $table->decimal('nomina', 20, 2);
@@ -23,10 +26,12 @@ return new class extends Migration
             $table->decimal('costos_indirectos_fabrica', 20, 2);
             $table->decimal('utilidad_bruta', 20, 2);
             $table->decimal('margen_bruto', 20, 2);
+            $table->decimal('horas', 20, 2);
             $table->timestamps();
 
             $table->foreign('sdp_id')->references('numero_sdp')->on('sdps')->onDelete('cascade');
             $table->foreign('tiempos_id')->references('id')->on('tiempos_produccions')->onDelete('cascade');
+            $table->foreign('cif_id')->references('id')->on('cifs')->onDelete('cascade');
         });
     }
 

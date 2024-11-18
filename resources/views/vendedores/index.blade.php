@@ -31,7 +31,7 @@
                             <th class="px-4 py-2 border">nombre</th>
                             <th class="px-4 py-2 border">correo</th>
                             <th class="px-4 py-2 border">editar</th>
-                            <th class="px-4 py-2 border">eliminar</th>
+                            <th class="px-4 py-2 border">desabilitar</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -46,11 +46,17 @@
                                 <a href="{{ route('vendedor.edit', $vendedor->id) }}" class="text-yellow-700 hover:text-yellow-400">editar</a>
                             </td>
                             <td class="px-4 py-2 border">
-                                <form action="{{ route('vendedor.destroy', $vendedor->id) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="text-red-600 hover:text-red-400" onclick="return confirm('seguro que desea eliminar este comercial')">eliminar</button>
-                                </form>
+                                @if ($vendedor->estado === 'activo')
+                                    <form action="{{ route('vendedor.disable', $vendedor->id) }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="btn btn-default">Deshabilitar</button>
+                                    </form>
+                                @else
+                                    <form action="{{ route('vendedor.enable', $vendedor->id) }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="btn btn-success">Habilitar</button>
+                                    </form>
+                                @endif
                             </td>
                         </tr>
                         @endforeach

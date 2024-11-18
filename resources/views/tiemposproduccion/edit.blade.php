@@ -106,13 +106,7 @@
                             
                             <label for="articulos_sdp">Items de SDP</label>
                             <div id="articulosContainer">
-                                <select name="articulos[articulo_id][]" id="articulos_sdp"  class="form-select" multiple>
-                                    @foreach ($tiempo_produccion->articulos as $articulo)
-                                        <option value="{{ $articulo->id }}" selected>
-                                            {{ $articulo->codigo }} - {{ $articulo->descripcion }}
-                                        </option>
-                                    @endforeach
-                                </select>
+                                <input type="text">
                             </div>
                         </div>
                     </div>

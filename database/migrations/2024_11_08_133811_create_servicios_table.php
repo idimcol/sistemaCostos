@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('codigo')->unique();
             $table->string('nombre');
-            $table->float('valor_hora')->nullable();
+            $table->decimal('valor_hora', 20, 2)->nullable();
             $table->timestamps();
         });
     }

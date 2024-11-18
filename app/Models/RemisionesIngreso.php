@@ -40,7 +40,7 @@ class RemisionesIngreso extends Model
 
     public function items()
     {
-        return $this->belongsToMany(Items::class, 'items_ingreso', 'remision_ingreso_id', 'item_id')
+        return $this->belongsToMany(Item::class, 'items_ingreso', 'remision_ingreso_id', 'item_id')
                     ->withPivot('cantidad');
     }
 

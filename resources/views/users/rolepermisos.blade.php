@@ -16,14 +16,16 @@
                     <form action="{{ route('roles.update', $role->id) }}" method="POST" class="max-w-sm mx-auto space-y-4">
                         @csrf
                         @method('PUT')
-                        <div class="select2-content">
-                            <select name="permissions[]" class="form-select" id="multiple-select-field" data-placeholder="seleccione los permisos..." multiple>
+                        <div class="checkbox-content">
+                            <ul>
                                 @foreach ($permisos as $permiso)
-                                    <option value="{{ $permiso->id }}" {{ in_array($permiso->id, $rolePermisos) ? 'selected':''}}>
+                                    <li>
+                                        <input type="checkbox" name="permissions[]" value="{{ $permiso->id }}" 
+                                            {{ in_array($permiso->id, $rolePermisos) ? 'checked' : '' }}>
                                         {{ $permiso->name }}
-                                    </option>
+                                    </li>
                                 @endforeach
-                            </select>
+                            </ul>
                         </div>
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-success">Guardar</button>
@@ -61,6 +63,14 @@
         .select2-content{
             max-height: 300px !important;
             overflow-y: auto;
+        }
+
+        .checkbox-content {
+            background: #e1e1e1;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 5px;
+            border-radius: 5px;
         }
     </style>
 @stop

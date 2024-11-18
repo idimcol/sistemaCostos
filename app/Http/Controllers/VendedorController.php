@@ -37,9 +37,22 @@ class VendedorController extends Controller
         return redirect()->route('vendedor.index')->with('success', 'vendedor creado con exito');
     }
 
-    public function show(string $id)
+    public function enable($id)
     {
-        
+        $vendedor = Vendedor::findOrFail($id);
+        $vendedor->estado = 'activo';
+        $vendedor->save();
+
+        return redirect()->back()->with('success', 'vendedor abilitado correctamente');
+    }
+
+    public function disable($id)
+    {
+        $vendedor = Vendedor::findOrFail($id);
+        $vendedor->estado = 'inactivo';
+        $vendedor->save();
+
+        return redirect()->back()->with('success', 'vendedor abilitado correctamente');
     }
 
     public function edit(string $id)

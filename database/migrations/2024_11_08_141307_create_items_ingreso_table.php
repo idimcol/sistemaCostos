@@ -13,7 +13,14 @@ return new class extends Migration
     {
         Schema::create('items_ingreso', function (Blueprint $table) {
             $table->id();
+            $table->string('remision_ingreso_id');
+            $table->string('item_id');
+            $table->integer('cantidad');
             $table->timestamps();
+
+            
+            $table->foreign('remision_ingreso_id')->references('codigo')->on('remision_ingresos')->onDelete('cascade');
+            $table->foreign('item_id')->references('codigo')->on('items')->onDelete('cascade');
         });
     }
 

@@ -26,24 +26,19 @@ class Articulo extends Model
 
     public function sdps()
     {
-        return $this->belongsToMany(SDP::class, 'articulo_sdp', 's_d_p_id', 'articulo_id')
+        return $this->belongsToMany(SDP::class, 'articulo_sdp', 'sdp_id', 'articulo_id')
                     ->withPivot('cantidad', 'precio');
-    }
-
-    public function tiemposProduccion()
-    {
-        return $this->belongsToMany(TiemposProduccion::class, 'articulo_tiempos_produccion', 'articulo_id', 'tiempos_produccion_id');
     }
 
     public function materiasPrimasDirectas()
     {
-        return $this->belongsToMany(MateriaPrima_directa::class, 'materia_prima_directas_costos', 'articulo_id', 'materia_prima_directa_id')
+        return $this->belongsToMany(MateriaPrimaDirecta::class, 'materia_prima_directas_costos', 'articulo_id', 'materia_prima_directa_id')
                     ->withPivot('cantidad', 'articulo_descripcion', 'costos_produccion_id');
     }
 
     public function materiasPrimasIndirectas()
     {
-        return $this->belongsToMany(MateriaPrima_indirecta::class, 'materia_prima_indirectas_costos', 'articulo_id', 'materia_indirecta_id')
+        return $this->belongsToMany(MateriaPrimaIndirecta::class, 'materia_prima_indirectas_costos', 'articulo_id', 'materia_indirecta_id')
                     ->withPivot('cantidad', 'articulo_descripcion', 'costos_produccion_id');
     }
 }

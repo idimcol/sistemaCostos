@@ -22,9 +22,9 @@
         </div>
         <div class="card">
             <div class="card-body">
-                <div class="card-header">
+                {{-- <div class="card-header">
                     <x-adminlte-button label="nuevo" data-toggle="modal" data-target="#modalPurple" theme="primary" icon="fas fa-key"/>
-                </div>
+                </div> --}}
                 <table class="table table-bordered">
                     <thead>
                         <tr class="bg-gray-50 text-gray-700">
@@ -56,7 +56,7 @@
     </div>
 </div>
 {{-- Themed --}}
-<x-adminlte-modal id="modalPurple" title="Nuevo permiso" theme="primary"
+{{-- <x-adminlte-modal id="modalPurple" title="Nuevo permiso" theme="primary"
     icon="fas fa-bolt" size='lg' disable-animations>
     <form action="{{ route('permisos.store') }}" method="POST">
         @csrf
@@ -66,7 +66,7 @@
         </div>
         <x-adminlte-button class="btn-flat" type="submit" label="Submit" theme="success" icon="fas fa-lg fa-save"/>
     </form>
-</x-adminlte-modal>
+</x-adminlte-modal> --}}
 @stop
 
 @section('css')

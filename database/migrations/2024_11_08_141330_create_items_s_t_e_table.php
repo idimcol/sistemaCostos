@@ -13,7 +13,13 @@ return new class extends Migration
     {
         Schema::create('items_s_t_e', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('solicitud_servicio_externo_id');
+            $table->string('descripcion')->nullable();
+            $table->string('servicio_requerido')->nullable();
+            $table->string('dureza_HRC')->nullable();
             $table->timestamps();
+
+            $table->foreign('solicitud_servicio_externo_id')->references('id')->on('solicitud_servicio_externos')->onDelete('cascade');
         });
     }
 

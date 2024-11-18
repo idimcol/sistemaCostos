@@ -1,4 +1,5 @@
 <?php
+
 use App\Http\Controllers\ADD_Clientes_servicios_Controller;
 use App\Http\Controllers\AdministraciónInventarioController;
 use App\Http\Controllers\AlmacenController;
@@ -14,6 +15,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\horasController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\ItemsOrdenCompraController;
 use App\Http\Controllers\ItemSTEController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\MateriaPrimaDirectaController;
@@ -53,7 +55,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
 
     // offline
-    Route::get('/offline', function() {
+    Route::get('/offline', function () {
         return view('vendor.laravelpwa.offline');
     });
 
@@ -68,7 +70,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/trabajadores/{id}/disable', [TrabajadoresController::class, 'disable'])->name('trabajadores.disable');
     Route::post('/trabajadores/{id}/enable', [TrabajadoresController::class, 'enable'])->name('trabajadores.enable');
     Route::post('/generate-print-list', [TrabajadoresController::class, 'generatePrintList'])->name('generate.print.list');
-    
+
     // operarios
     Route::resource('/operarios', OperativoController::class);
     Route::get('/listar-operativos', [OperativoController::class, 'listarOperativos'])->name('listar.operarios');
@@ -80,6 +82,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/printLista/{id}', [TiemposProduccionController::class, 'print'])->name('tiempos.print');
     Route::patch('/sdps/{id}/abrir', [SdpController::class, 'abrir'])->name('sdps.abrir');
     Route::patch('/sdps/{id}/cerrar', [SdpController::class, 'cerrar'])->name('sdps.cerrar');
+    Route::get('/getServiciosSdp/{numeroSdp}', [TiemposProduccionController::class, 'getServiciosSdp']);
 
     // operarios
     Route::get('grupos', [TiemposProduccionController::class, 'groupByOperario'])->name('tiempos.group');
@@ -99,8 +102,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/nominas/update-bulk', [NominaController::class, 'updateBulk'])->name('nominas.update-bulk');
     Route::delete('/paquete_nominas/{id}', [NominaController::class, 'destroy'])->name('paquete_nominas.destroy');
     Route::get('/nomina/{id}/desprendible', [NominaController::class, 'mostrarDesprendible'])->name('nomina.desprendible');
-        // export
-        Route::get('/nomina/export/{paquete}', [ExportController::class, 'export'])->name('nominas.export');
+    // export
+    Route::get('/nomina/export/{paquete}', [ExportController::class, 'export'])->name('nominas.export');
     Route::get('paquteNomina/{id}/edit', [NominaController::class, 'editNomina'])->name('paqueteNomina.edit');
     Route::put('paquteNomina/{id}/update', [NominaController::class, 'updateNomina'])->name('paquetaNomina.update');
     Route::post('/nomina/{paquete}/add-worker', [NominaController::class, 'addWorker'])->name('nomina.addWorker');
@@ -136,6 +139,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/api/precio-articulo-sdp', [ArticuloController::class, 'getPrecioArticuloSdp']);
     // vendedores
     Route::resource('vendedor', VendedorController::class);
+    Route::post('vendedor/{id}/disable', [VendedorController::class, 'disable'])->name('vendedor.disable');
+    Route::post('vendedor/{id}/enable', [VendedorController::class, 'enable'])->name('vendedor.enable');
 
     // clientes
     Route::resource('clientes', ClienteController::class);
@@ -187,7 +192,7 @@ Route::middleware(['auth'])->group(function () {
     // servicios
     route::get('/servicio', [ServicioController::class, 'mainS'])->name('servicio');
     Route::resource('servicios', ServicioController::class);
-    Route::get('/servicios-sdps', [ ServicioController::class, 'indexSdp'])->name('servicio.index');
+    Route::get('/servicios-sdps', [ServicioController::class, 'indexSdp'])->name('servicio.index');
 
     // servicios costos
     Route::get('/sdps/{sdp}/servicios', [ServicioSdpController::class, 'show'])->name('serviciosCostos.show');
@@ -229,6 +234,10 @@ Route::middleware(['auth'])->group(function () {
 
     // compras
     Route::resource('Ordencompras', Ordenes_compraController::class);
+    Route::get('/api/buscar-items-orden-compra', [Ordenes_compraController::class, 'BuscarItems']);
+
+    // itemsOrdenCompra
+    Route::post('/item-orden-compra/store', [ItemsOrdenCompraController::class, 'store'])->name('itemOrden.store');
 
     // inventario
     Route::resource('inventario', InventoryController::class);
@@ -270,14 +279,3 @@ Route::middleware(['auth'])->group(function () {
     // servocios Externos 
     Route::resource('serviciosExternos', servicioExternoController::class);
 });
-Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
-Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
-Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

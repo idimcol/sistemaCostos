@@ -17,9 +17,7 @@ class OrdenCompra extends Model
         'numero',
         'proveedor_id',
         'fecha_orden',
-        'subtotal',
         'iva',
-        'total'
     ];
 
     protected static function boot()
@@ -30,16 +28,23 @@ class OrdenCompra extends Model
 
     public function proveedor()
     {
-        return $this->belongsTo(Proveedor::class);
+        return $this->belongsTo(Proveedor::class, 'proveedor_id', 'nit');
     }
 
     public function materiaPrimaDirecta()
     {
-        return $this->hasMany(MateriaPrima_directa::class);
+        return $this->hasMany(MateriaPrimaDirecta::class);
     }
 
     public function materiaPrimaIdirecta()
     {
-        return $this->hasMany(MateriaPrima_indirecta::class);
+        return $this->hasMany(MateriaPrimaIndirecta::class);
+    }
+
+    public function items()
+    {
+        return $this->belongsToMany(itemsOrdenCompras::class, 'items_orden_compras_cantidads', 'numero_orden_compra', 'item_codigo')
+                    ->withPivot('cantidad', 'precio')
+                    ->withTimestamps();
     }
 }

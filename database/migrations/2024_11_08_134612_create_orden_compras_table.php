@@ -14,12 +14,16 @@ return new class extends Migration
         Schema::create('orden_compras', function (Blueprint $table) {
             $table->id();
             $table->string('numero')->unique();
-            $table->foreignId('proveedor_id')->constrained('proveedores');
+            $table->string('proveedor_id');
             $table->date('fecha_orden');
             $table->float('subtotal');
             $table->float('iva');
             $table->float('total');
+            $table->string('elaboracion');
+            $table->string('autorizacion');
             $table->timestamps();
+
+            $table->foreign('proveedor_id')->references('nit')->on('proveedores')->onDelete('cascade');
         });
     }
 

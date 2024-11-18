@@ -87,7 +87,6 @@ class nomina extends Model
             $devengado_incapacidad = bcmul(bcdiv($sueldo_base_decimal, '30', 2), $dias->dias_incapacidad, 2);
             $devengado_vacaciones = bcmul(bcdiv($sueldo_base_decimal, '30', 2), $dias->dias_vacaciones, 2);
             $devengado_remunerados = bcmul(bcdiv($sueldo_base_decimal, '30', 2), $dias->dias_remunerados, 2);
-    
             // Cálculo de suspensión
             $suspencion = bcmul(bcdiv($sueldo_base_decimal, '30', 2), $dias->dias_no_remunerados, 2);
 

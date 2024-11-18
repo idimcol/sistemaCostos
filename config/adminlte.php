@@ -63,7 +63,7 @@ return [
     |
     */
 
-    'logo' => '<b>Admin</b>LTE',
+    'logo' => 'SistemaCostos',
     'logo_img' => 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsVpDdEZpcQyL21RirrUW88r-ATjStR6UG7X4GjWd2PQ&s',
     'logo_img_class' => 'brand-image img-circle elevation-3',
     'logo_img_xl' => null,

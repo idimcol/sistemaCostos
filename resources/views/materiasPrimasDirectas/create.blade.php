@@ -23,10 +23,11 @@
                         </div>
 
                         <div>
-                            <label class="form-label" for="nombre">proveedor</label>
-                            <select name="proveedor_id" id="" class="form-select">
+                            <label class="form-label" for="nombre">proveedor NIT</label>
+                            <select name="proveedor_id" id="proveedorSelect" class="form-select">
+                                <option value="">Seleccione un proveedor</option>
                                 @foreach ($proveedores as $proveedor)
-                                    <option value="{{$proveedor->nit}}">{{$proveedor->nombre}}</option>
+                                    <option value="{{ $proveedor->nit }}" data-nombre="{{ $proveedor->nombre }}">{{ $proveedor->nit }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -43,7 +44,12 @@
         
                         <div>
                             <label class="form-label" for="nombre">Numero de orden de compra</label>
-                            <input type="text" name="numero_orden_compra" id="numero_orden_compra" class="form-control" required>
+                            <select name="" id="" class="form-select">
+                                <option value="">Seleccione una orden de compra</option>
+                                @foreach ($ordenesCompras as $orden)
+                                    <option value="{{ $orden->numero }}">{{ $orden->numero }}</option>
+                                @endforeach
+                            </select>
                         </div>
                         
                         <div>
@@ -135,6 +141,16 @@
             // Agregar eventos de escucha a los campos de entrada para recalcular el valor al cambiar
             cantidadInput.addEventListener('input', calcularValor);
             precioUnitarioInput.addEventListener('input', calcularValor);
+        });
+    </script>
+    <script>
+        document.getElementById('proveedorSelect').addEventListener('change', function() {
+            // Obtener el nombre del proveedor seleccionado
+            const selectedOption = this.options[this.selectedIndex];
+            const nombreProveedor = selectedOption.getAttribute('data-nombre');
+    
+            // Actualizar el campo de texto con el nombre del proveedor
+            document.getElementById('proveedor').value = nombreProveedor || '';
         });
     </script>
 @stop

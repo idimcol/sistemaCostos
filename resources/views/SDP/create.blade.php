@@ -438,9 +438,9 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
+                        alert('Artículo creado exitosamente.');
                         $('#crearArticuloModal').modal('hide');
                         event.target.reset();
-                        alert('Artículo creado exitosamente.');
                     }else if (data.errors) {
                         // Si hay errores de validación, podrías mostrarlos en la interfaz de usuario
                         alert('Errores de validación: ' + JSON.stringify(data.errors));
@@ -451,7 +451,25 @@
                 .catch(error => {
                     console.error('Error:', error);
                     alert('Hubo un error al procesar la solicitud.');
+                })
+                .finally(() => {
+                    $('#crearArticuloModal').modal('hide');
                 });
+            });
+
+            $('#crearArticuloModal').on('hidden.bs.modal', function () {
+                $(document).removeClass('modal-open');
+                $('.modal-backdrop').remove();
+            });
+
+            $('#crearArticuloModal').on('hidden.bs.modal', function () {
+                $('body').css('overflow', 'auto');
+            });
+
+            $(document).ready(function () {
+                $(document).on('hidde.bs.modal', function () {
+                    $('.modal-backdrop').remove();
+                })
             });
         });
     </script>

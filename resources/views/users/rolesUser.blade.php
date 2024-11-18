@@ -19,7 +19,7 @@
                     <form action="{{ route('users.update', $user->id) }}" method="POST" class="max-w-sm mx-auto space-y-4">
                         @csrf
                         @method('PUT')
-                        <select name="roles[]" class="form-select" id="multiple-select-field" data-placeholder="seleccione el role..." multiple>
+                        <select name="roles[]" class="form-select" id="multiple-select-field" data-placeholder="seleccione el role..." aria-placeholder="seleccione el role...">
                             @foreach ($roles as $role)
                                 <option value="{{ $role->id }}" {{ in_array($role->id, $roleUsers) ? 'selected':''}}>
                                     {{ $role->name }}

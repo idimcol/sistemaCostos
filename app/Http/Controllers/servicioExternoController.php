@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Servicio_esterno;
+use App\Models\ServicioExterno;
 use Illuminate\Http\Request;
 
 class servicioExternoController extends Controller
@@ -18,7 +19,7 @@ class servicioExternoController extends Controller
 
     public function index()
     {
-        $serviciosExternos = Servicio_esterno::all();
+        $serviciosExternos = ServicioExterno::all();
 
         return view('serviciosExternos.index', compact('serviciosExternos'));
     }
@@ -36,7 +37,7 @@ class servicioExternoController extends Controller
             'valor_hora' => 'required|string',
         ]);
 
-        $serviciosExternos = new Servicio_esterno([
+        $serviciosExternos = new ServicioExterno([
             'descripcion' => $request->input('descripcion'),
             'proveedor' => $request->input('proveedor'),
             'valor_hora' => $request->input('valor_hora'),
@@ -46,14 +47,9 @@ class servicioExternoController extends Controller
         return redirect()->route('serviciosExternos.index')->with('success', 'servicio externo exitosamente creado');
     }
 
-    public function show(string $id)
-    {
-        //
-    }
-
     public function edit(string $id)
     {
-        $serviciosExternos = Servicio_esterno::findOrFail($id);
+        $serviciosExternos = ServicioExterno::findOrFail($id);
         return view('serviciosExternos.edit', compact('serviciosExternos'));
     }
 
@@ -65,7 +61,7 @@ class servicioExternoController extends Controller
             'valor_hora' => 'required|string',
         ]);
 
-        $serviciosExternos = Servicio_esterno::findOrFail($id);
+        $serviciosExternos = ServicioExterno::findOrFail($id);
         $serviciosExternos->update([
             'descripcion' => $request->input('descripcion'),
             'proveedor' => $request->input('proveedor'),
@@ -77,7 +73,7 @@ class servicioExternoController extends Controller
 
     public function destroy(string $id)
     {
-        $serviciosExternos = Servicio_esterno::findOrFail($id);
+        $serviciosExternos = ServicioExterno::findOrFail($id);
         $serviciosExternos->delete();
 
         return redirect()->route('serviciosExternos.index')->with('success', 'servicio externo exitosamente eliminado');

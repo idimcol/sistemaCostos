@@ -28,12 +28,6 @@
             <div class="flex items-center justify-between mb-8">
                 <div>
                     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsVpDdEZpcQyL21RirrUW88r-ATjStR6UG7X4GjWd2PQ&s" alt="IDIMCOL Logo" class="w-32 mb-2">
-                    @foreach ($idimcols as $idimcol)
-                        <p class="text-sm p"><b class="">{{ $idimcol->nombre }}</b></p>
-                        <p class="text-sm p"><b>{{ $idimcol->direccion }}</b></p>
-                        <p class="text-sm p">NIT: <b>{{ $idimcol->nit }}</b></p>
-                        <p class="text-sm p">TEL: <b>{{ $idimcol->telefono }}</b></p>
-                    @endforeach    
                 </div>
                 <div class="center">
                     <h1 class="text-2xl font-bold mb-2">COSTOS DE PRODUCCION</h1>
@@ -124,7 +118,6 @@
                         <tr class="bg-gray-400 border border-black">
                             <th class="border p-1">Valor de Venta</th>
                             <th class="border p-1">Mano de Obra Directa (MOI)</th>
-                            <th class="border p-1">Nomina</th>
                             <th class="border p-1">Materias Primas Directas (MPD)</th>
                             <th class="border p-1">Materias Primas Indirectas (MPI)</th>
                             <th class="border p-1">Costos Indirectos de Fábrica (CIF)</th>
@@ -134,36 +127,31 @@
                         <tr class="border border-black odd:bg-white even:bg-gray-200">
 
                             <td class="border px-1">
-                                {{ number_format($totalTiempos, 2, ',', '.') }}
+                                {{ number_format($total, 2, ',', '.') }}
                                 <button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#articuloTiempos">
                                     Detalles
                                 </button>
                             </td>
                             
                             <td class="border px-1">
-                                {{ number_format($totalManoObraServicio, 2, ',', '.') }}
+                                {{ number_format($totalManoObra, 2, ',', '.') }}
                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#mano_obra" data-index="{{ $index + 1 }}">Detalles</button>
                             </td>
+
                             <td class="border px-1">
-                                {{ number_format($totalManoObra, 2, ',', '.') }}
-                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#operariosModal">
-                                    Detalles
-                                </button>
-                            </td>
-                            <td class="border px-1">
-                                {{ number_format($totaldirectas, 2, ',', '.') }}
+                                {{ number_format($totalCif, 2) }}
                                 <button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#materias_primas">
                                     Detalles
                                 </button>
                             </td>
                             <td class="border px-1">
-                                {{ number_format($totalIndeirectas, 2, ',', '.') }}
+                                
                                 <button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#materias_primas_indirectas">
                                     Detalles
                                 </button>
                             </td>
                             <td class="border px-1">
-                                {{ number_format($totalCIF, 2, ',', '.') }}
+                                
                                 <button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#CIF">
                                     Detalles
                                 </button>
@@ -174,12 +162,12 @@
                     <tfoot>
                         <tr class="bg-gray-400 border border-gray-400">
                             <td class="border p-1">Utilidad Bruta</td>
-                            <td class="border p-1 text-right">{{ number_format($utilidadBruta, 2, ',', '.') }}</td>
+                            <td class="border p-1 text-right"></td>
                         </tr>
                         <tr class="bg-gray-400 border border-gray-400">
                             <td class="border p-1">MARGEN BRUTO</td>
                             <td class="border p-1 text-right">
-                                {{ number_format($margenBruto, 2, ',', '.') }}%
+                                %
                             </td>
                         </tr>
                     </tfoot>
@@ -207,17 +195,17 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($articulosTiemposConSubtotales as $articuloTiempo)
+                                @foreach ($articulosConSubtotales as $articulo)
                                     <tr>
-                                        <td>{{ $articuloTiempo->descripcion }}</td>
-                                        <td>{{ number_format($articuloTiempo->subtotal, 2, ',', '.') }}</td>
+                                        <td>{{ $articulo->descripcion }}</td>
+                                        <td>{{ number_format($articulo->subtotal, 2, ',', '.') }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
                             <tfoot>
                                 <tr>
                                     <td>total</td>
-                                    <td>{{ number_format($totalTiempos, 2, ',', '.') }}</td>
+                                    <td>{{ number_format($total, 2, ',', '.') }}</td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -245,24 +233,29 @@
                             <thead>
                                 <tr>
                                     <th>Operario</th>
+                                    <th>Servicio</th>
                                     <th>Horas Trabajadas</th>
-                                    <th>Articulo</th>
+                                    <th>MOI</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($operariosConTiempos as $operario)
+                                @foreach ($costosProduccion as $key => $costos)
+                                    @php
+                                        // Separar los elementos agrupados por operario, articulo y servicio
+                                        list($operario, $articulo, $servicio) = explode('-', $key);
+                                    @endphp
                                     <tr>
-                                        <td>{{ $operario['nombre'] }}</td>
-                                        <td>{{ $operario['total_horas'] }}</td>
-                                        <td>{{ $operario['articulo'] }}</td>
-                                        
+                                        <td>{{ $operario }}</td>
+                                        <td>{{ $servicio }}</td>
+                                        <td>{{ $costos['horas'] }}</td>
+                                        <td>{{ number_format($costos['mano_obra_directa'], 2) }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
                             <tfoot>
                                 <tr>
                                     <td colspan="">total de mano de obra</td>
-                                    <td>{{ number_format($totalManoObraServicio, 2, ',', '.') }}</td>
+                                    <td>{{ number_format($totalManoObra, 2, ',', '.') }}</td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -293,14 +286,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($articulo->materiasPrimasDirectas as $materiaDirecta)
-                            <tr>
-                                <td>{{ $materiaDirecta->codigo }}</td>
-                                <td>{{ $materiaDirecta->descripcion }}</td>
-                                <td>{{ $materiaDirecta->pivot->cantidad }}</td>
-                                <td>{{ number_format($materiaDirecta->precio_unit, 2, ',', '.') }}</td>
-                            </tr>
-                        @endforeach
+                        
                     </tbody>
                     <tfoot>
                         <tr>
@@ -339,20 +325,12 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($operariosConTiempos as $operario)
-                                    <tr>
-                                        <td>{{ $operario['nombre'] }}</td>
-                                        <td>{{ $operario['sueldo'] }}</td>
-                                        
-                                        
-                                        <td>{{ number_format($operario['mano_obra_directa'], 2, ',', '.') }}</td>
-                                    </tr>
-                                @endforeach
+                                
                             </tbody>
                             <tfoot>
                                 <tr>
                                     <td colspan="4">total de mano de obra nomina</td>
-                                    <td>{{ number_format($totalManoObra, 2, ',', '.') }}</td>
+                                    <td></td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -383,14 +361,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($articulo->materiasPrimasIndirectas as $materiaIndirecta)
-                            <tr>
-                                <td>{{ $materiaIndirecta->codigo }}</td>
-                                <td>{{ $materiaIndirecta->descripcion }}</td>
-                                <td>{{ $materiaIndirecta->pivot->cantidad }}</td>
-                                <td>{{ number_format($materiaIndirecta->precio_unit, 2, ',', '.') }}</td>
-                            </tr>
-                        @endforeach
+                        
                     </tbody>
                     <tfoot>
                         <tr>
@@ -420,6 +391,7 @@
                     <thead>
                         <tr>
                             <th>costos</th>
+                            <th>cif</th>
                             <th>total horas</th>
                             <th>total valor</th>
                         </tr>
@@ -429,21 +401,24 @@
                             <td>
                                 <ol>
                                     <li>
-                                        MOI: {{ number_format($MOI, 2, ',', '.') }}
+                                        MOI: 
                                     </li>
                                     <li>
-                                        GOI: {{ number_format($GOI, 2, ',', '.') }}
+                                        GOI: 
                                     </li>
                                     <li>
-                                        OCI: {{ number_format($OCI, 2, ',', '.') }}
+                                        OCI: 
                                     </li>
                                 </ol>
                             </td>
                             <td>
-                                {{ $totalHoras }}
+                                
                             </td>
                             <td>
-                                {{ number_format($totalCIF, 2, ',', '.') }}
+                                
+                            </td>
+                            <td>
+                                
                             </td>
                         </tr>
                     </tbody>
@@ -536,7 +511,6 @@
             display: flex;
             flex-direction: column;
             text-align: center;
-            transform: translateX(-150px);
         }
 
         .content, .content-header {
