@@ -16,6 +16,7 @@ return new class extends Migration
             $table->integer('dias_trabajados')->default(0);
             $table->integer('dias_remunerados')->default(0);
             $table->integer('dias_incapacidad')->default(0);
+            $table->integer('dias_incapacidad_eps')->default(0);
             $table->integer('dias_vacaciones')->default(0);
             $table->integer('dias_no_remunerados')->default(0);
             $table->unsignedBigInteger('trabajador_id');

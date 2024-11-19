@@ -16,10 +16,52 @@ use Spatie\Permission\Models\Role;
 class UsersController extends Controller
 {
 
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('can:configuracion')->only('index');
+    }
+
     public function index()
     {
         $users = User::all();
         return view('users.index', compact('users'));
+    }
+
+    public function profile()
+    {
+        return view('profile.index');
+    }
+
+    public function updateUser(Request $request)
+    {
+        $user = Auth::user();
+
+        // Validar los datos
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
+            'password' => 'nullable|min:8|confirmed', // Solo si se quiere cambiar la contraseña
+        ]);
+
+        // Actualizar los datos
+        $user->name = $request->name;
+        $user->email = $request->email;
+
+        if ($request->password) {
+            $user->password = Hash::make($request->password);
+        }
+
+        $user->save();
+
+        // Redirigir con un mensaje de éxito
+        return back()->with('success', 'Perfil actualizado correctamente.');
+    }
+
+    public function show()
+    {
+        $user = Auth::user(); // Obtiene el usuario autenticado
+        return view('profile.show', compact('user')); // Pasa los datos a la vista
     }
 
     public function create()
@@ -80,5 +122,4 @@ class UsersController extends Controller
         $user->delete();
         return redirect()->route('users.index')->with('status', 'Usuario eliminado con éxito.');
     }
-
 }

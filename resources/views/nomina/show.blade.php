@@ -93,14 +93,16 @@
                                         <th class="px-4 py-2 border c">salario</th>
 
                                         <th class="px-4 py-2 border c">dias trabajados</th>
-                                        <th class="px-4 py-2 border c">dias incapacidad</th>
+                                        <th class="px-4 py-2 border c">dias incapacidad ARL</th>
+                                        <th class="px-4 py-2 border c">dias incapacidad EPS</th>
                                         <th class="px-4 py-2 border c">dias vacaciones</th>
                                         <th class="px-4 py-2 border c">dias renumerados</th>
                                         <th class="px-4 py-2 border c">dias totales</th>
 
                                         <th class="px-4 py-2 border c">bonificacion// auxilio de rodamiento</th>
                                         <th class="px-4 py-2 border c">devengados dias trabajados</th>
-                                        <th class="px-4 py-2 border c">devengados dias incapacidad</th>
+                                        <th class="px-4 py-2 border c">devengados dias incapacidad ARL</th>
+                                        <th class="px-4 py-2 border c">devengados dias incapacidad EPS</th>
                                         <th class="px-4 py-2 border c">devengados dias vacaciones</th>
                                         <th class="px-4 py-2 border c">devengados dias renumerados</th>
                                         <th class="px-4 py-2 border c">auxilio de transporte</th>
@@ -137,12 +139,14 @@
                                             <td class="px-4 py-2 border c">{{ number_format($nomina->trabajador->sueldos->first()->sueldo, 2, ',', '.') }}</td>
                                             <td class="px-4 py-2 border c" data-field="dias_trabajados" data-nomina-id="{{ $nomina->id }}" >{{ $nomina->dias->dias_trabajados }}</td>
                                             <td class="px-4 py-2 border c" contenteditable="true" id="dias_incapacidad" data-field="dias_incapacidad" data-nomina-id="{{ $nomina->id }}">{{ $nomina->dias->dias_incapacidad }}</td>
+                                            <td class="px-4 py-2 border c" contenteditable="true" id="dias_incapacidad_eps" data-field="dias_incapacidad_eps" data-nomina-id="{{ $nomina->id }}">{{ $nomina->dias->dias_incapacidad_eps }}</td>
                                             <td class="px-4 py-2 border c" contenteditable="true" id="dias_vacaciones" data-field="dias_vacaciones" data-nomina-id="{{ $nomina->id }}">{{ $nomina->dias->dias_vacaciones }}</td>
                                             <td class="px-4 py-2 border c" contenteditable="true" id="dias_remunerados" data-field="dias_remunerados" data-nomina-id="{{ $nomina->id }}">{{ $nomina->dias->dias_remunerados }}</td>
                                             <td class="px-4 py-2 border c">{{ $nomina->total_dias }}</td>
                                             <td class="px-4 py-2 border c" contenteditable="true" data-field="bonificacion_auxilio" data-nomina-id="{{ $nomina->id }}">{{ number_format($nomina->bonificacion_auxilio, 2, ',', '.') }}</td>
                                             <td class="px-4 py-2 border c" data-field="devengado_trabajados" data-nomina-id="{{ $nomina->id }}">{{ number_format($nomina->devengado_trabajados, 2, ',', '.') }}</td>
                                             <td class="px-4 py-2 border c" data-field="devengado_incapacidad" data-nomina-id="{{ $nomina->id }}">{{ number_format($nomina->devengado_incapacidad, 2, ',', '.') }}</td>
+                                            <td class="px-4 py-2 border c" data-field="devengado_incapacidad_eps" data-nomina-id="{{ $nomina->id }}">{{ number_format($nomina->devengado_incapacidad_eps, 2, ',', '.') }}</td>
                                             <td class="px-4 py-2 border c" data-field="devengado_vacaciones" data-nomina-id="{{ $nomina->id }}">{{ number_format($nomina->devengado_vacaciones, 2, ',', '.') }}</td>
                                             <td class="px-4 py-2 border c" data-field="devengado_remunerados" data-nomina-id="{{ $nomina->id }}">{{ number_format($nomina->devengado_remunerados, 2, ',', '.') }}</td>
                                             <td class="px-4 py-2 border c" data-field="auxilio_transporte" data-nomina-id="{{ $nomina->id }}">{{ number_format($nomina->auxilio_transporte, 2, ',', '.') }}</td>
@@ -197,13 +201,15 @@
                                     <tr class="">
                                         <th class="px-4 py-2 border">salario</th>
                                         <th class="px-4 py-2 border">dias trabajados</th>
-                                        <th class="px-4 py-2 border">dias incapacidad</th>
+                                        <th class="px-4 py-2 border">dias incapacidad ARL</th>
+                                        <th class="px-4 py-2 border">dias incapacidad EPS</th>
                                         <th class="px-4 py-2 border"> dias vacaviones</th>
                                         <th class="px-4 py-2 border">dias remunerados</th>
                                         <th class="px-4 py-2 border">dias totales</th>
                                         <th class="px-4 py-2 border">bonificacion auxilo de rodamiento</th>
                                         <th class="px-4 py-2 border">devengado dias trabajados</th>
-                                        <th class="px-4 py-2 border">devengado dias incapacidad</th>
+                                        <th class="px-4 py-2 border">devengado dias incapacidad ARL</th>
+                                        <th class="px-4 py-2 border">devengado dias incapacidad EPS</th>
                                         <th class="px-4 py-2 border">devengado dias vacaciones</th>
                                         <th class="px-4 py-2 border">devengado dias remunerados</th>
                                         <th class="px-4 py-2 border">auxilio de transporte</th>
@@ -224,12 +230,14 @@
                                         <td class="px-4 py-2 border">{{ number_format($totalSueldo, 2, ',', '.') }}</td>
                                         <td class="px-4 py-2 border">{{ $total_dias_trabajados }}</td>
                                         <td class="px-4 py-2 border">{{  $total_dias_incapacidad }}</td>
+                                        <td class="px-4 py-2 border">{{  $total_dias_incapacidad_eps }}</td>
                                         <td class="px-4 py-2 border">{{ $total_dias_vacaciones }}</td>
                                         <td class="px-4 py-2 border">{{ $total_dias_remunerados }}</td>
                                         <td class="px-4 py-2 border">{{ $total_dias }}</td>
                                         <td class="px-4 py-2 border">{{ number_format($total_bonificacion, 2, ',', '.') }}</td>
                                         <td class="px-4 py-2 border">{{ number_format($total_D_dias_trabajados, 2, ',', '.') }}</td>
                                         <td class="px-4 py-2 border">{{ number_format($total_D_dias_incapacidad, 2, ',', '.') }}</td>
+                                        <td class="px-4 py-2 border">{{ number_format($total_D_dias_incapacidad_eps, 2, ',', '.') }}</td>
                                         <td class="px-4 py-2 border">{{ number_format($total_D_dias_vacaciones, 2, ',', '.') }}</td>
                                         <td class="px-4 py-2 border">{{ number_format($total_D_dias_remunerados, 2, ',', '.') }}</td>
                                         <td class="px-4 py-2 border">{{ number_format($total_auxilio, 2, ',', '.') }}</td>
@@ -542,7 +550,7 @@
                     const nominaId = this.dataset.nominaId;
                     let value = this.textContent.trim();
 
-                    if (['dias_incapacidad', 'dias_vacaciones', 'dias_remunerados', 'dias_no_remunerados'].includes(field)) {
+                    if (['dias_incapacidad', 'dias_vacaciones', 'dias_incapacidad_eps',  'dias_remunerados', 'dias_no_remunerados'].includes(field)) {
                         value = validateDays(value);
                         this.textContent = value; // Actualiza el contenido de la celda con el valor validado
                     } else if (['bonificacion_auxilio', 'celular', 'anticipo', 'otro'].includes(field)) {
@@ -557,15 +565,16 @@
                     }
                     cambios[nominaId][field] = value;
 
-                    if (['dias_incapacidad', 'dias_vacaciones', 'dias_remunerados'].includes(field)) {
+                    if (['dias_incapacidad', 'dias_incapacidad_eps', 'dias_vacaciones', 'dias_remunerados'].includes(field)) {
                         const nominaCalculo = calculoDias.find(n => n.id.toString() === nominaId);
                         if (nominaCalculo) {
                             const diasTrabajadosCell = document.querySelector(`td[data-nomina-id="${nominaId}"][data-field="dias_trabajados"]`);
                             const diasIncapacidad = validateDays(document.querySelector(`td[data-nomina-id="${nominaId}"][data-field="dias_incapacidad"]`).textContent);
+                            const diasIncapacidadEPS = validateDays(document.querySelector(`td[data-nomina-id="${nominaId}"][data-field="dias_incapacidad_eps"]`).textContent);
                             const diasVacaciones = validateDays(document.querySelector(`td[data-nomina-id="${nominaId}"][data-field="dias_vacaciones"]`).textContent);
                             const diasRemunerados = validateDays(document.querySelector(`td[data-nomina-id="${nominaId}"][data-field="dias_remunerados"]`).textContent);
                             
-                            const diasTrabajados = Math.max(0, 30 - diasIncapacidad - diasVacaciones - diasRemunerados);
+                            const diasTrabajados = Math.max(0, 30 - diasIncapacidad - diasIncapacidadEPS - diasVacaciones - diasRemunerados);
                             diasTrabajadosCell.textContent = diasTrabajados;
                             cambios[nominaId]['dias_trabajados'] = diasTrabajados;
                         }

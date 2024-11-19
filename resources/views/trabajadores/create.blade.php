@@ -211,6 +211,10 @@
             color: #ffffff;
         }
 
+        h1 {
+            text-transform: uppercase;
+        }
+
         select {
             width: 500px;
             height: 50px;

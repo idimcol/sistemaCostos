@@ -26,13 +26,15 @@
                         <th>cargo</th>
                         <th>salario</th>
                         <th>días trabajados</th>
-                        <th>días incapacidad</th>
+                        <th>días incapacidad ARL</th>
+                        <th>días incapacidad EPS</th>
                         <th>días vacaciones</th>
                         <th>días renumerados</th>
                         <th>días totales</th>
                         <th>bonificación// auxilio de rodamiento</th>
                         <th>devengados días trabajados</th>
-                        <th>devengados días incapacidad</th>
+                        <th>devengados días incapacidad ARL</th>
+                        <th>devengados días incapacidad EPS</th>
                         <th>devengados días vacaciones</th>
                         <th>devengados días renumerados</th>
                         <th>auxilio de transporte</th>
@@ -62,12 +64,14 @@
                             <td>{{ number_format($nomina->trabajador->sueldos->first()->sueldo, 2, '.', ',') }}</td>
                             <td>{{ $nomina->dias->dias_trabajados }}</td>
                             <td>{{ $nomina->dias->dias_incapacidad }}</td>
+                            <td>{{ $nomina->dias->dias_incapacidad_eps }}</td>
                             <td>{{ $nomina->dias->dias_vacaciones }}</td>
                             <td>{{ $nomina->dias->dias_remunerados }}</td>
                             <td>{{ $nomina->total_dias }}</td>
                             <td>{{ number_format($nomina->bonificacion_auxilio, 2, '.', ',') }}</td>
                             <td>{{ number_format($nomina->devengado_trabajados, 2, '.', ',') }}</td>
                             <td>{{ number_format($nomina->devengado_incapacidad, 2, '.', ',') }}</td>
+                            <td>{{ number_format($nomina->devengado_incapacidad_eps, 2, '.', ',') }}</td>
                             <td>{{ number_format($nomina->devengado_vacaciones, 2, '.', ',') }}</td>
                             <td>{{ number_format($nomina->devengado_remunerados, 2, '.', ',') }}</td>
                             <td>{{ number_format($nomina->auxilio_transporte, 2, '.', ',') }}</td>
@@ -98,13 +102,15 @@
                 <tr>
                     <th>salario</th>
                     <th>dias trabajados</th>
-                    <th>dias incapacidad</th>
+                    <th>dias incapacidad ARL</th>
+                    <th>dias incapacidad EPS</th>
                     <th> dias vacaviones</th>
                     <th>dias remunerados</th>
                     <th>dias totales</th>
                     <th>bonificacion auxilo de rodamiento</th>
                     <th>devengado dias trabajados</th>
-                    <th>devengado dias incapacidad</th>
+                    <th>devengado dias incapacidad ARL</th>
+                    <th>devengado dias incapacidad EPS</th>
                     <th>devengado dias vacaciones</th>
                     <th>devengado dias remunerados</th>
                     <th>auxilio de transporte</th>
@@ -125,12 +131,14 @@
                     <td>{{ number_format($totalSueldo, 2, ',', '.') }}</td>
                     <td>{{ $total_dias_trabajados }}</td>
                     <td>{{  $total_dias_incapacidad }}</td>
+                    <td>{{  $total_dias_incapacidad_eps }}</td>
                     <td>{{ $total_dias_vacaciones }}</td>
                     <td>{{ $total_dias_remunerados }}</td>
                     <td>{{ $total_dias }}</td>
                     <td>{{ number_format($total_bonificacion, 2, ',', '.') }}</td>
                     <td>{{ number_format($total_D_dias_trabajados, 2, ',', '.') }}</td>
                     <td>{{ number_format($total_D_dias_incapacidad, 2, ',', '.') }}</td>
+                    <td>{{ number_format($total_D_dias_incapacidad_eps, 2, ',', '.') }}</td>
                     <td>{{ number_format($total_D_dias_vacaciones, 2, ',', '.') }}</td>
                     <td>{{ number_format($total_D_dias_remunerados, 2, ',', '.') }}</td>
                     <td>{{ number_format($total_auxilio, 2, ',', '.') }}</td>

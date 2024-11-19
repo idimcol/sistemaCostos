@@ -96,8 +96,11 @@ class Ordenes_compraController extends Controller
     public function edit($id)
     {
         $ordenCompra = OrdenCompra::where('numero', $id)->firstOrFail();
-        return view('ordenesCompra.edit', compact('ordenCompra'));
+        $proveedores = Proveedor::all();
+        $itemsOrden = $ordenCompra->items;
+        return view('ordenesCompra.edit', compact('ordenCompra', 'proveedores', 'itemsOrden'));
     }
+
 
     public function show($id)
     {
@@ -114,39 +117,72 @@ class Ordenes_compraController extends Controller
             return $item->setAttribute('subtotal', $subtotal);
         });
 
-        return view('ordenesCompra.show', compact('ordenCompra', 'itemsConSubtotales', 'total'));
+        $iva = $total * $ordenCompra->iva;
+        $Total_pagar = $iva + $total;
+
+        return view('ordenesCompra.show', compact('ordenCompra', 'itemsConSubtotales', 'total', 'iva', 'Total_pagar'));
     }
 
     public function update(Request $request, $id)
     {
-        $ordenCompra = OrdenCompra::with('proveedor')->findOrFail($id);
+        try {
+            $ordenCompra = OrdenCompra::where('numero', $id)->firstOrFail();
 
-        $request->validate([
-            'proveedor_id' => 'required|exists:proveedores,id',
-            'fecha_orden' => 'required|date',
-            'elaboracion' => 'required|string',
-            'autorizacion' => 'required|string',
-            'subtotal' => 'required|numeric',
-            'iva' => 'required|numeric',
-            'total' => 'required|numeric',
-        ]);
+            $request->validate([
+                'proveedor_id' => 'required|exists:proveedores,nit',
+                'fecha_orden' => 'required|date',
+                'elaboracion' => 'required|string',
+                'autorizacion' => 'required|string',
+                'iva' => 'required|numeric',
+                'items' => 'required|array',
+                'items.*.descripcion' => 'required|string',
+                'items.*.cantidad' => 'required|integer|min:1',
+                'items.*.precio' => 'required|numeric|min:0'
+            ]);
 
-        $ordenCompra->update([
-            'proveedor_id' => $request->proveedor_id,
-            'fecha_orden' => $request->fecha_orden,
-            'elaboracion' => $request->elaboracion,
-            'autorizacion' => $request->autorizacion,
-            'subtotal' => $request->subtotal,
-            'iva' => $request->iva,
-            'total' => $request->total
-        ]);
+            DB::beginTransaction();
 
-        return redirect()->route('Ordencompras.index')->with('Orden de Compra actualizada axitosamente');
+            $ordenCompra->update([
+                'proveedor_id' => $request->proveedor_id,
+                'fecha_orden' => $request->fecha_orden,
+                'elaboracion' => $request->elaboracion,
+                'autorizacion' => $request->autorizacion,
+                'iva' => $request->iva,
+            ]);
+
+            $itemsEnviados = $request->items;
+
+            $items_Ids=[];
+
+            foreach ($itemsEnviados as $itemData) {
+                
+                $item = itemsOrdenCompras::where('descripcion', $itemData['descripcion'])->first();
+
+                if ($item) {
+                    $items_Ids[$item->codigo] = [
+                        'cantidad' => $itemData['cantidad'],
+                        'precio' => $itemData['precio']
+                    ];
+                }
+            }
+
+            $ordenCompra->items()->syncWithoutDetaching($items_Ids);
+
+            DB::commit();
+
+            return redirect()->route('Ordencompras.index')->with('success', 'Orden de Compra actualizada axitosamente');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            Log::error('Error al actualizar orden de compra: ' . $e->getMessage(), ['stack' => $e->getTraceAsString()]);
+
+            return redirect()->back()->withErrors(['error' => 'Ocurrió un error al actualizar la orden de compra. Por favor, inténtelo de nuevo.' . $e->getMessage()]);
+        }
     }
 
     public function destroy($id)
     {
-        $ordenCompra = OrdenCompra::with('proveedor')->where('numero', $id)->findOrFail($id);
+        $ordenCompra = OrdenCompra::where('numero', $id)->firstOrFail();
         $ordenCompra->delete();
 
         return redirect()->back()->with('success', 'Orden de compra eliminada exitosamente');

@@ -61,10 +61,11 @@ class NominaController extends Controller
             'paquete_nomina_id' => $paquete->id,
             'devengado_trabajados' => 0,
             'devengado_incapacidad' => 0,
+            'devengado_incapacidad_eps' => 0,
             'devengado_vacaciones' => 0,
             'devengado_remunerados' => 0,
             'pension' => $esAprendizSENA ? 0 : 0.04, // Si es Aprendiz SENA, la pensión es 0
-            'salud' => $esAprendizSENA ? 0 : 0.04, 
+            'salud' => $esAprendizSENA ? 0 : 0.04,
             'total_deducido' => 0,
             'total_devengado' => 0,
             'total_a_pagar' => 0,
@@ -81,6 +82,7 @@ class NominaController extends Controller
             'trabajador_id' => $trabajador->id,
             'dias_trabajados' => 30,
             'dias_incapacidad' => 0,
+            'dias_incapacidad_eps' => 0,
             'dias_vacaciones' => 0,
             'dias_remunerados' => 0,
             'dias_no_remunerados' => 0,
@@ -119,126 +121,128 @@ class NominaController extends Controller
     {
         Log::info('Iniciando creación de paquete', $request->all());
 
-    try {
-        $request->validate([
-            'mes' => 'required|integer|min:1|max:12',
-            'año' => 'required|integer',
-        ]);
+        try {
+            $request->validate([
+                'mes' => 'required|integer|min:1|max:12',
+                'año' => 'required|integer',
+            ]);
 
-        Log::info('Validación pasada');
+            Log::info('Validación pasada');
 
-        DB::beginTransaction();
+            DB::beginTransaction();
 
-        Log::info('Verificando paquete existente');
-        $paqueteExistente = PaqueteNomina::where('mes', $request->mes)
-            ->where('año', $request->año)
-            ->first();
+            Log::info('Verificando paquete existente');
+            $paqueteExistente = PaqueteNomina::where('mes', $request->mes)
+                ->where('año', $request->año)
+                ->first();
 
-        if ($paqueteExistente) {
-            Log::info('Paquete ya existe', ['id' => $paqueteExistente->id]);
-            return back()->with('error', 'Ya existe un paquete de nóminas para este mes y año.');
-        }
-
-        Log::info('Intentando crear paquete');
-        $paquete = PaqueteNomina::create([
-            'mes' => $request->mes,
-            'año' => $request->año,
-        ]);
-
-        if (!$paquete) {
-            throw new \Exception('No se pudo crear el paquete de nóminas.');
-        }
-
-        Log::info('Paquete creado', ['id' => $paquete->id]);
-
-        $trabajadores = Trabajador::all();
-        Log::info('Creando nóminas para trabajadores', ['count' => $trabajadores->count()]);
-
-        foreach ($trabajadores as $trabajador) {
-            // Verificar si el trabajador está inactivo
-            if ($trabajador->estado == 'inactivo') {
-                Log::info('Trabajador inactivo, nómina no creada', ['trabajador_id' => $trabajador->id]);
-                continue;
+            if ($paqueteExistente) {
+                Log::info('Paquete ya existe', ['id' => $paqueteExistente->id]);
+                return back()->with('error', 'Ya existe un paquete de nóminas para este mes y año.');
             }
 
-            // Obtener el sueldo más reciente
-            $sueldoReciente = $trabajador->sueldos()->latest()->first();
-
-            Log::info('Datos del trabajador antes de crear nómina', [
-                'id' => $trabajador->id,
-                'nombre' => $trabajador->nombre,
-                'sueldo_base' => $sueldoReciente->sueldo ?? 'No encontrado'
-            ]);
-
-            $esAprendizSENA = $trabajador->cargo == 'APRENDIZ SENA';
-
-            $nomina = new nomina([
-                'trabajador_id' => $trabajador->id,
+            Log::info('Intentando crear paquete');
+            $paquete = PaqueteNomina::create([
                 'mes' => $request->mes,
                 'año' => $request->año,
-                'periodo_pago' => $request->mes . '/' . $request->año,
-                'paquete_nomina_id' => $paquete->id,
-                'devengado_trabajados' => 0,
-                'devengado_incapacidad' => 0,
-                'devengado_vacaciones' => 0,
-                'devengado_remunerados' => 0,
-                'pension' => $esAprendizSENA ? 0 : 0.04, // Si es Aprendiz SENA, la pensión es 0
-                'salud' => $esAprendizSENA ? 0 : 0.04, 
-                'total_deducido' => 0,
-                'total_devengado' => 0,
-                'total_a_pagar' => 0,
-                'suspencion' => 0,
-                'bonificacion_auxilio' => 0,
-                'celular' => 0,
-                'anticipo' => 0,
-                'otro' => 0,
-                'auxilio_transporte' => 0,
             ]);
 
-            $nomina->save();
+            if (!$paquete) {
+                throw new \Exception('No se pudo crear el paquete de nóminas.');
+            }
 
-            // Crear el registro de días asociado
-            $dias = new Dia([
-                'nomina_id' => $nomina->id,
-                'trabajador_id' => $trabajador->id,
-                'dias_trabajados' => 30,
-                'dias_incapacidad' => 0,
-                'dias_vacaciones' => 0,
-                'dias_remunerados' => 0,
-                'dias_no_remunerados' => 0,
+            Log::info('Paquete creado', ['id' => $paquete->id]);
+
+            $trabajadores = Trabajador::all();
+            Log::info('Creando nóminas para trabajadores', ['count' => $trabajadores->count()]);
+
+            foreach ($trabajadores as $trabajador) {
+                // Verificar si el trabajador está inactivo
+                if ($trabajador->estado == 'inactivo') {
+                    Log::info('Trabajador inactivo, nómina no creada', ['trabajador_id' => $trabajador->id]);
+                    continue;
+                }
+
+                // Obtener el sueldo más reciente
+                $sueldoReciente = $trabajador->sueldos()->latest()->first();
+
+                Log::info('Datos del trabajador antes de crear nómina', [
+                    'id' => $trabajador->id,
+                    'nombre' => $trabajador->nombre,
+                    'sueldo_base' => $sueldoReciente->sueldo ?? 'No encontrado'
+                ]);
+
+                $esAprendizSENA = $trabajador->cargo == 'APRENDIZ SENA';
+
+                $nomina = new nomina([
+                    'trabajador_id' => $trabajador->id,
+                    'mes' => $request->mes,
+                    'año' => $request->año,
+                    'periodo_pago' => $request->mes . '/' . $request->año,
+                    'paquete_nomina_id' => $paquete->id,
+                    'devengado_trabajados' => 0,
+                    'devengado_incapacidad' => 0,
+                    'devengado_incapacidad_eps' => 0,
+                    'devengado_vacaciones' => 0,
+                    'devengado_remunerados' => 0,
+                    'pension' => $esAprendizSENA ? 0 : 0.04, // Si es Aprendiz SENA, la pensión es 0
+                    'salud' => $esAprendizSENA ? 0 : 0.04,
+                    'total_deducido' => 0,
+                    'total_devengado' => 0,
+                    'total_a_pagar' => 0,
+                    'suspencion' => 0,
+                    'bonificacion_auxilio' => 0,
+                    'celular' => 0,
+                    'anticipo' => 0,
+                    'otro' => 0,
+                    'auxilio_transporte' => 0,
+                ]);
+
+                $nomina->save();
+
+                // Crear el registro de días asociado
+                $dias = new Dia([
+                    'nomina_id' => $nomina->id,
+                    'trabajador_id' => $trabajador->id,
+                    'dias_trabajados' => 30,
+                    'dias_incapacidad' => 0,
+                    'dias_incapacidad_eps' => 0,
+                    'dias_vacaciones' => 0,
+                    'dias_remunerados' => 0,
+                    'dias_no_remunerados' => 0,
+                ]);
+                $dias->save();
+
+                Log::info('Nómina creada, antes de calcular', [
+                    'nomina_id' => $nomina->id,
+                    'trabajador_id' => $nomina->trabajador_id,
+                    'dias_trabajados' => $dias->dias_trabajados
+                ]);
+
+                $nomina->calcularNomina();
+
+                Log::info('Nómina calculada', [
+                    'nomina_id' => $nomina->id,
+                    'devengado_trabajados' => $nomina->devengado_trabajados,
+                    'total_devengado' => $nomina->total_devengado,
+                    'auxilio_rodamiento' => $request->bonificacion_auxilio
+                ]);
+                Log::info('Nómina creada para trabajador', ['trabajador_id' => $trabajador->id, 'nomina_id' => $nomina->id]);
+            }
+
+            DB::commit();
+            Log::info('Transacción completada');
+
+            return redirect()->route('nomina.index')->with('success', 'Paquete de nóminas creado exitosamente.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error al crear paquete de nóminas', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
             ]);
-            $dias->save();
-
-            Log::info('Nómina creada, antes de calcular', [
-                'nomina_id' => $nomina->id,
-                'trabajador_id' => $nomina->trabajador_id,
-                'dias_trabajados' => $dias->dias_trabajados
-            ]);
-
-            $nomina->calcularNomina();
-
-            Log::info('Nómina calculada', [
-                'nomina_id' => $nomina->id,
-                'devengado_trabajados' => $nomina->devengado_trabajados,
-                'total_devengado' => $nomina->total_devengado,
-                'auxilio_rodamiento' => $request->bonificacion_auxilio
-            ]);
-            Log::info('Nómina creada para trabajador', ['trabajador_id' => $trabajador->id, 'nomina_id' => $nomina->id]);
+            return back()->with('error', 'Error al crear el paquete de nóminas: ' . $e->getMessage());
         }
-
-        DB::commit();
-        Log::info('Transacción completada');
-
-        return redirect()->route('nomina.index')->with('success', 'Paquete de nóminas creado exitosamente.');
-    } catch (\Exception $e) {
-        DB::rollBack();
-        Log::error('Error al crear paquete de nóminas', [
-            'message' => $e->getMessage(),
-            'trace' => $e->getTraceAsString()
-        ]);
-        return back()->with('error', 'Error al crear el paquete de nóminas: ' . $e->getMessage());
     }
-}
 
     public function obtenerNominasEspecificas(PaqueteNomina $paquete)
     {
@@ -298,54 +302,58 @@ class NominaController extends Controller
         ];
 
         $trabajadoresSinNomina = Trabajador::doesntHave('nominas')->where('estado', 'activo')->get();
-    
+
         $trabajadorIds = Trabajador::where('estado', 'activo')->pluck('id');
-    
+
         // $nominas = $paquete->nominas()
         //     ->whereIn('trabajador_id', $trabajadorIds)
         //     ->with(['trabajador.sueldos', 'dias'])
         //     ->get();
 
         $nominas = $paquete->nominas()
-        ->whereIn('trabajador_id', $trabajadorIds)
-        ->with(['trabajador.sueldos', 'dias'])
-        ->join('trabajadors', 'nominas.trabajador_id', '=', 'trabajadors.id')
-        ->orderBy('trabajadors.apellido')
-        ->select('nominas.*')
-        ->get();
-        
+            ->whereIn('trabajador_id', $trabajadorIds)
+            ->with(['trabajador.sueldos', 'dias'])
+            ->join('trabajadors', 'nominas.trabajador_id', '=', 'trabajadors.id')
+            ->orderBy('trabajadors.apellido')
+            ->select('nominas.*')
+            ->get();
+
         $totalSueldo = $nominas->sum(function ($nomina) {
             // Asegúrate de que el sueldo más reciente se obtiene correctamente
             $latestSueldo = $nomina->trabajador->sueldos()->latest()->first();
             return $latestSueldo ? $latestSueldo->sueldo : 0;
         });
-    
+
         $total_dias_trabajados = 0;
         $total_dias_incapacidad = 0;
         $total_dias_vacaciones = 0;
         $total_dias_remunerados = 0;
         $total_bonificacion = 0;
         $total_dias_no_remunerados = 0;
-        foreach ($nominas as $nomina){
+        $total_dias_incapacidad_eps = 0;
+        foreach ($nominas as $nomina) {
             $diasTrabajados = $nomina->dias->dias_trabajados;
             $diasIncapacidad = $nomina->dias->dias_incapacidad;
+            $diasIncapacidadEps = $nomina->dias->dias_incapacidad_eps;
             $diasVacaciones = $nomina->dias->dias_vacaciones;
             $diasRemunerados = $nomina->dias->dias_remunerados;
             $diasNoRemunerados = $nomina->dias->dias_no_remunerados;
 
             $total_dias_trabajados += $diasTrabajados;
             $total_dias_incapacidad += $diasIncapacidad;
+            $total_dias_incapacidad_eps += $diasIncapacidadEps;
             $total_dias_vacaciones += $diasVacaciones;
             $total_dias_remunerados += $diasRemunerados;
-            $total_dias_no_remunerados += $diasNoRemunerados; 
+            $total_dias_no_remunerados += $diasNoRemunerados;
         }
-    
+
         $total_D_dias_trabajados = $nominas->sum('devengado_trabajados');
         $total_D_dias_incapacidad = $nominas->sum('devengado_incapacidad');
+        $total_D_dias_incapacidad_eps = $nominas->sum('devengado_incapacidad_eps');
         $total_D_dias_vacaciones = $nominas->sum('devengado_vacaciones');
         $total_D_dias_remunerados = $nominas->sum('devengado_remunerados');
         $total_bonificacion = $nominas->sum('bonificacion_auxilio');
-    
+
         $total_auxilio = $nominas->sum('auxilio_transporte');
         $total_otro = $nominas->sum('otro');
         $total_devengado = $nominas->sum('total_devengado');
@@ -356,44 +364,68 @@ class NominaController extends Controller
         $total_suspencion = $nominas->sum('suspencion');
         $total_deducido = $nominas->sum('total_deducido');
         $total_a_pagar = $nominas->sum('total_a_pagar');
-    
+
         $total_dias = 0;
         foreach ($nominas as $nomina) {
-            $nomina->total_dias = $nomina->dias->dias_trabajados 
-                + $nomina->dias->dias_incapacidad 
-                + $nomina->dias->dias_vacaciones 
+            $nomina->total_dias = $nomina->dias->dias_trabajados
+                + $nomina->dias->dias_incapacidad
+                + $nomina->dias->dias_incapacidad_eps
+                + $nomina->dias->dias_vacaciones
                 + $nomina->dias->dias_remunerados;
             $total_dias += $nomina->total_dias;
         }
-    
+
         $trabajadoresIdsPCC = [11, 13, 12, 15, 8, 6, 5, 17];
         $total_a_pagar_pcc = $paquete->nominas()
             ->whereIn('trabajador_id', $trabajadoresIdsPCC)
             ->sum('total_a_pagar');
-    
+
         $trabajadoresIdsAdmon = [4, 18, 10, 9, 1];
         $total_a_pagar_admon = $paquete->nominas()
             ->whereIn('trabajador_id', $trabajadoresIdsAdmon)
             ->sum('total_a_pagar');
-    
+
         $trabajadoresIdsSocios = [3, 19, 16, 9];
         $total_a_pagar_socios = $paquete->nominas()
             ->whereIn('trabajador_id', $trabajadoresIdsSocios)
             ->sum('total_a_pagar');
-    
+
         $subtotal = $total_a_pagar_pcc + $total_a_pagar_admon + $total_a_pagar_socios;
-    
-        return view('nomina.show', compact('paquete', 'nominas', 'meses', 'totalSueldo', 
-                                            'total_dias_trabajados', 'total_dias_incapacidad', 
-                                            'total_dias_vacaciones', 'total_dias_remunerados', 
-                                            'total_dias_no_remunerados', 'total_D_dias_trabajados', 
-                                            'total_D_dias_incapacidad', 'total_D_dias_vacaciones', 
-                                            'total_D_dias_remunerados', 'total_bonificacion', 
-                                            'total_auxilio', 'total_devengado', 'total_pencion', 
-                                            'total_salud', 'total_celular', 'total_anticipo', 
-                                            'total_suspencion', 'total_deducido', 'total_a_pagar', 
-                                            'total_dias', 'total_a_pagar_pcc', 'total_a_pagar_admon', 
-                                            'total_a_pagar_socios', 'subtotal', 'total_otro', 'trabajadoresSinNomina'));
+
+        return view('nomina.show', compact(
+            'paquete',
+            'nominas',
+            'meses',
+            'totalSueldo',
+            'total_dias_trabajados',
+            'total_dias_incapacidad',
+            'total_dias_incapacidad_eps',
+            'total_dias_vacaciones',
+            'total_dias_remunerados',
+            'total_dias_no_remunerados',
+            'total_D_dias_trabajados',
+            'total_D_dias_incapacidad',
+            'total_D_dias_vacaciones',
+            'total_D_dias_incapacidad_eps',
+            'total_D_dias_remunerados',
+            'total_bonificacion',
+            'total_auxilio',
+            'total_devengado',
+            'total_pencion',
+            'total_salud',
+            'total_celular',
+            'total_anticipo',
+            'total_suspencion',
+            'total_deducido',
+            'total_a_pagar',
+            'total_dias',
+            'total_a_pagar_pcc',
+            'total_a_pagar_admon',
+            'total_a_pagar_socios',
+            'subtotal',
+            'total_otro',
+            'trabajadoresSinNomina'
+        ));
     }
 
     public function updateBulk(Request $request)
@@ -406,8 +438,8 @@ class NominaController extends Controller
         try {
             foreach ($cambios as $nominaId => $campos) {
                 $nomina = nomina::findOrFail($nominaId);
-                $diasCampos = ['dias_incapacidad', 'dias_vacaciones', 'dias_remunerados', 'dias_trabajados', 'dias_no_remunerados'];
-                $numerosCampos = ['bonificacion_auxilio','celular', 'anticipo', 'otro'];
+                $diasCampos = ['dias_incapacidad', 'dias_incapacidad_eps', 'dias_vacaciones', 'dias_remunerados', 'dias_trabajados', 'dias_no_remunerados'];
+                $numerosCampos = ['bonificacion_auxilio', 'celular', 'anticipo', 'otro'];
                 $stringCampos = ['desde', 'a'];
 
                 foreach ($campos as $campo => $valor) {
@@ -444,6 +476,7 @@ class NominaController extends Controller
                     'devengado_trabajados' => number_format($nomina->devengado_trabajados, 2, '.', ','),
                     'devengado_incapacidad' => number_format($nomina->devengado_incapacidad, 2, '.', ','),
                     'devengado_vacaciones' => number_format($nomina->devengado_vacaciones, 2, '.', ','),
+                    'devengado_incapacidad_eps' => number_format($nomina->devengado_incapacidad_eps, 2, '.', ','),
                     'devengado_remunerados' => number_format($nomina->devengado_remunerados, 2, '.', ','),
                     'pension' => number_format($nomina->pension, 2, '.', ','),
                     'salud' => number_format($nomina->salud, 2, '.', ','),
@@ -519,8 +552,7 @@ class NominaController extends Controller
         ];
 
         $nomina = nomina::with(['trabajador.sueldos', 'dias', 'paqueteNomina'])->findOrFail($id);
-        
+
         return view('nomina.nomina', compact('nomina', 'meses'));
     }
-
 }

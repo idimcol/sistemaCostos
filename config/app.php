@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'SistemaCostos'),
+    'name' => env('APP_NAME', 'Finalyze'),
 
     /*
     |--------------------------------------------------------------------------

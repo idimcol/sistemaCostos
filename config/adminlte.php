@@ -14,9 +14,9 @@ return [
     |
     */
 
-    'title' => 'sistemaCostos',
+    'title' => 'Finalyze',
     'title_prefix' => '',
-    'title_postfix' => '|SistemaCostos',
+    'title_postfix' => '|Finalyze',
 
     /*
     |--------------------------------------------------------------------------
@@ -63,7 +63,7 @@ return [
     |
     */
 
-    'logo' => 'SistemaCostos',
+    'logo' => 'Finalyze',
     'logo_img' => 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsVpDdEZpcQyL21RirrUW88r-ATjStR6UG7X4GjWd2PQ&s',
     'logo_img_class' => 'brand-image img-circle elevation-3',
     'logo_img_xl' => null,
@@ -337,7 +337,7 @@ return [
         ['header' => 'CONFIGURACIÓN DE CUENTA'],
         [
             'text' => 'perfil',
-            'route' => 'profile.show',
+            'route' => 'profile.index',
             'icon' => 'fas fa-fw fa-address-card',
             
         ],

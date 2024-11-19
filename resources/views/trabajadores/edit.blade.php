@@ -171,6 +171,10 @@
             font-size: 20px;
         }
 
+        h1 {
+            text-transform: uppercase;
+        }
+
         .container {
             background: #afb5bb;
             max-width: 500rem;

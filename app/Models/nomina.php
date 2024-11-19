@@ -16,7 +16,8 @@ class nomina extends Model
         'mes', 
         'periodo_pago', 
         'devengado_trabajados',
-        'devengado_incapacidad', 
+        'devengado_incapacidad',
+        'devengado_incapacidad_eps', 
         'devengado_vacaciones', 
         'devengado_remunerados',
         'pension', 
@@ -85,6 +86,7 @@ class nomina extends Model
             // Cálculo de devengados
             $devengado_trabajados = bcmul(bcdiv($sueldo_base_decimal, '30', 2), $dias->dias_trabajados, 2);
             $devengado_incapacidad = bcmul(bcdiv($sueldo_base_decimal, '30', 2), $dias->dias_incapacidad, 2);
+            $devengado_incapacidad_eps = bcmul(bcmul(bcdiv($sueldo_base_decimal, '30', 2), $dias->dias_incapacidad_eps, 2), '0.666', 2);
             $devengado_vacaciones = bcmul(bcdiv($sueldo_base_decimal, '30', 2), $dias->dias_vacaciones, 2);
             $devengado_remunerados = bcmul(bcdiv($sueldo_base_decimal, '30', 2), $dias->dias_remunerados, 2);
             // Cálculo de suspensión
@@ -94,7 +96,7 @@ class nomina extends Model
             $auxilio_transporte = ($auxilio_transporte_base/30)*($dias->dias_trabajados-$dias->dias_no_remunerados);
     
             // Cálculo de totales
-            $total_devengado = bcadd($bonificacion_auxilio_decimal, bcadd($devengado_trabajados, bcadd($devengado_incapacidad, bcadd($devengado_vacaciones, bcadd($devengado_remunerados, $auxilio_transporte, 2), 2), 2), 2), 2);
+            $total_devengado = bcadd($bonificacion_auxilio_decimal, bcadd($devengado_trabajados, bcadd($devengado_incapacidad, bcadd($devengado_incapacidad_eps, bcadd($devengado_vacaciones, bcadd($devengado_remunerados, $auxilio_transporte, 2), 2), 2), 2), 2), 2);
             $total_deducido = bcadd($pension, bcadd($salud, bcadd($this->celular, bcadd($this->anticipo, $suspencion, 2), 2) + $this->otro, 2), 2);
             $total_a_pagar = bcsub($total_devengado, $total_deducido, 2);
     
@@ -104,6 +106,7 @@ class nomina extends Model
                 'salud' => $salud,
                 'devengado_trabajados' => $devengado_trabajados,
                 'devengado_incapacidad' => $devengado_incapacidad,
+                'devengado_incapacidad_eps' => $devengado_incapacidad_eps,
                 'devengado_vacaciones' => $devengado_vacaciones,
                 'devengado_remunerados' => $devengado_remunerados,
                 'auxilio_transporte' => $auxilio_transporte,
@@ -126,7 +129,7 @@ class nomina extends Model
 
     public function calcularDiasTrabajados($dias)
     {
-        return 30 - $dias->dias_incapacidad - $dias->dias_vacaciones - $dias->dias_remunerados;
+        return 30 - $dias->dias_incapacidad - $dias->dias_vacaciones - $dias->dias_incapacidad_eps - $dias->dias_remunerados;
     }
 
 

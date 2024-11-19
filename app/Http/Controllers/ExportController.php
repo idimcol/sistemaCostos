@@ -54,6 +54,7 @@ class ExportController extends Controller
     
         $total_dias_trabajados = 0;
         $total_dias_incapacidad = 0;
+        $total_dias_incapacidad_eps = 0;
         $total_dias_vacaciones = 0;
         $total_dias_remunerados = 0;
         $total_bonificacion = 0;
@@ -61,12 +62,14 @@ class ExportController extends Controller
         foreach ($nominas as $nomina){
             $diasTrabajados = $nomina->dias->dias_trabajados;
             $diasIncapacidad = $nomina->dias->dias_incapacidad;
+            $diasIncapacidadEPS = $nomina->dias->dias_incapacidad_eps;
             $diasVacaciones = $nomina->dias->dias_vacaciones;
             $diasRemunerados = $nomina->dias->dias_remunerados;
             $diasNoRemunerados = $nomina->dias->dias_no_remunerados;
 
             $total_dias_trabajados += $diasTrabajados;
             $total_dias_incapacidad += $diasIncapacidad;
+            $total_dias_incapacidad_eps += $diasIncapacidadEPS;
             $total_dias_vacaciones += $diasVacaciones;
             $total_dias_remunerados += $diasRemunerados;
             $total_dias_no_remunerados += $diasNoRemunerados; 
@@ -74,6 +77,7 @@ class ExportController extends Controller
     
         $total_D_dias_trabajados = $nominas->sum('devengado_trabajados');
         $total_D_dias_incapacidad = $nominas->sum('devengado_incapacidad');
+        $total_D_dias_incapacidad_eps = $nominas->sum('devengado_incapacidad_eps');
         $total_D_dias_vacaciones = $nominas->sum('devengado_vacaciones');
         $total_D_dias_remunerados = $nominas->sum('devengado_remunerados');
         $total_bonificacion = $nominas->sum('bonificacion_auxilio');
@@ -93,6 +97,7 @@ class ExportController extends Controller
         foreach ($nominas as $nomina) {
             $nomina->total_dias = $nomina->dias->dias_trabajados 
                 + $nomina->dias->dias_incapacidad 
+                + $nomina->dias->dias_incapacidad_eps 
                 + $nomina->dias->dias_vacaciones 
                 + $nomina->dias->dias_remunerados;
             $total_dias += $nomina->total_dias;
@@ -116,8 +121,8 @@ class ExportController extends Controller
         $subtotal = $total_a_pagar_pcc + $total_a_pagar_admon + $total_a_pagar_socios;
     
         return view('nomina.export', compact('paquete', 'nominas', 'meses', 'totalSueldo', 
-                                            'total_dias_trabajados', 'total_dias_incapacidad', 
-                                            'total_dias_vacaciones', 'total_dias_remunerados', 
+                                            'total_dias_trabajados', 'total_dias_incapacidad', 'total_dias_incapacidad_eps', 
+                                            'total_dias_vacaciones', 'total_dias_remunerados', 'total_D_dias_incapacidad_eps', 
                                             'total_dias_no_remunerados', 'total_D_dias_trabajados', 
                                             'total_D_dias_incapacidad', 'total_D_dias_vacaciones', 
                                             'total_D_dias_remunerados', 'total_bonificacion', 

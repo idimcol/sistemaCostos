@@ -11,7 +11,8 @@ class Dia extends Model
 
     protected $fillable = [
         'dias_trabajados', 'dias_remunerados', 'dias_incapacidad',
-        'dias_vacaciones', 'dias_no_remunerados', 'trabajador_id', 'nomina_id'
+        'dias_vacaciones', 'dias_no_remunerados', 'trabajador_id', 'nomina_id',
+        'dias_incapacidad_eps'
     ];
     public function nomina()
     {

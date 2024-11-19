@@ -329,45 +329,45 @@
                 const container = document.getElementById('articulos-container');
                 
                 const newArticuloHtml = `
-            <div class="form-group articulo-item">
-                <div class="mb-4">
-                    <div>
-                        <input type="text" class="form-control articulo-buscar mb-4" placeholder="Buscar artículo...">
-                        <div class="suggestions-container"></div>
+                <div class="form-group articulo-item">
+                    <div class="mb-4">
+                        <div>
+                            <input type="text" class="form-control articulo-buscar mb-4" placeholder="Buscar artículo...">
+                            <div class="suggestions-container"></div>
+                        </div>
+                        <button type="button" class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#crearArticuloModal">
+                            Crear Nuevo Artículo
+                        </button>
                     </div>
-                    <button type="button" class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#crearArticuloModal">
-                        Crear Nuevo Artículo
-                    </button>
+
+                    <div class="mb-4">
+                        <label for="articulo_${articuloIndex}_descripcion">Descripción</label>
+                        <input type="text" name="articulos[${articuloIndex}][descripcion]" id="articulo_${articuloIndex}_descripcion" class="form-control" required readonly>
+                    </div>    
+
+
+                    <div class="mb-4">
+                        <label for="articulo_${articuloIndex}_material">Material</label>
+                        <input type="text" name="articulos[${articuloIndex}][material]" id="articulo_${articuloIndex}_material" class="form-control" readonly>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="articulo_${articuloIndex}_plano">Plano</label>
+                        <input type="text" name="articulos[${articuloIndex}][plano]" id="articulo_${articuloIndex}_plano" class="form-control" readonly>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="articulo_${articuloIndex}_cantidad">Cantidad</label>
+                        <input type="number" name="articulos[${articuloIndex}][cantidad]" id="articulo_${articuloIndex}_cantidad" class="form-control" required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="articulo_${articuloIndex}_precio">Precio</label>
+                        <input type="number" name="articulos[${articuloIndex}][precio]" id="articulo_${articuloIndex}_precio" class="form-control" required>
+                    </div>
+                    
+                    <button type="button" class="btn btn-danger remove-articulo mb-4">Eliminar Artículo</button>
                 </div>
-
-                <div class="mb-4">
-                    <label for="articulo_${articuloIndex}_descripcion">Descripción</label>
-                    <input type="text" name="articulos[${articuloIndex}][descripcion]" id="articulo_${articuloIndex}_descripcion" class="form-control" required readonly>
-                </div>    
-
-
-                <div class="mb-4">
-                    <label for="articulo_${articuloIndex}_material">Material</label>
-                    <input type="text" name="articulos[${articuloIndex}][material]" id="articulo_${articuloIndex}_material" class="form-control" readonly>
-                </div>
-
-                <div class="mb-4">
-                    <label for="articulo_${articuloIndex}_plano">Plano</label>
-                    <input type="text" name="articulos[${articuloIndex}][plano]" id="articulo_${articuloIndex}_plano" class="form-control" readonly>
-                </div>
-
-                <div class="mb-4">
-                    <label for="articulo_${articuloIndex}_cantidad">Cantidad</label>
-                    <input type="number" name="articulos[${articuloIndex}][cantidad]" id="articulo_${articuloIndex}_cantidad" class="form-control" required>
-                </div>
-
-                <div class="mb-4">
-                    <label for="articulo_${articuloIndex}_precio">Precio</label>
-                    <input type="number" name="articulos[${articuloIndex}][precio]" id="articulo_${articuloIndex}_precio" class="form-control" required>
-                </div>
-                
-                <button type="button" class="btn btn-danger remove-articulo mb-4">Eliminar Artículo</button>
-            </div>
         `;
 
                 container.insertAdjacentHTML('beforeend', newArticuloHtml);

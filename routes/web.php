@@ -247,6 +247,11 @@ Route::middleware(['auth'])->group(function () {
     // categorias
     Route::resource('categorias', CategoryController::class);
 
+    // profile
+    Route::middleware('auth')->get('/perfil', [UsersController::class, 'show'])->name('perfil');
+    Route::get('/profile', [UsersController::class, 'profile'])->name('profile.index');
+    Route::put('/user/{id}/update', [UsersController::class, 'updateUser'])->name('user.update');
+
     // productos
 
     route::resource('productos', ProductosController::class);

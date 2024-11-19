@@ -9,6 +9,8 @@ use App\Models\Remicion;
 use App\Models\RemisionIngreso;
 use App\Models\SDP;
 use App\Models\Proveedor;
+use App\Models\RemisionesDespacho;
+use App\Models\RemisionesIngreso;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -39,7 +41,7 @@ class RemicionesController extends Controller
 
     public function Despacho()
     {
-        $remicionesDespacho = Remicion::with('items', 'cliente', 'sdp')->get();
+        $remicionesDespacho = RemisionesDespacho::with('items', 'cliente', 'sdp')->get();
         
         return view('remiciones.despacho', compact('remicionesDespacho'));
     }
@@ -80,7 +82,7 @@ class RemicionesController extends Controller
 
         DB::beginTransaction();
 
-        $remiciones = Remicion::create([
+        $remiciones = RemisionesDespacho::create([
             'cliente_id' => $request->cliente_id,
             'fecha_despacho' => $request->fecha_despacho,
             'sdp_id' => $request->sdp_id,
@@ -109,7 +111,7 @@ class RemicionesController extends Controller
 
     public function showDespacho($id)
     {
-        $remisionDespacho = Remicion::with('cliente')->find($id);
+        $remisionDespacho = RemisionesDespacho::with('cliente')->find($id);
 
         $items = $remisionDespacho->items;
 
@@ -118,7 +120,7 @@ class RemicionesController extends Controller
 
     public function editDespacho($id)
     {
-        $remisionDespacho = Remicion::findOrFail($id);
+        $remisionDespacho = RemisionesDespacho::findOrFail($id);
 
         return view('remiciones.editDespacho', compact('remisionDespacho'));
     }
@@ -127,7 +129,7 @@ class RemicionesController extends Controller
     {
 
         try {
-            $remiciones = Remicion::findOrFail($id);
+            $remiciones = RemisionesDespacho::findOrFail($id);
 
             $request->validate([
                 'cliente_id' => 'required|string|exists:clientes,nit',
@@ -187,7 +189,7 @@ class RemicionesController extends Controller
 
     public function destroyDespacho($id)
     {
-        $remiciones = Remicion::findOrFail($id);
+        $remiciones = RemisionesDespacho::findOrFail($id);
         $remiciones->delete();
 
         return redirect()->route('remision.despacho')->with('success', 'Remision de despacho se ha eliminado con éxito');
@@ -195,7 +197,7 @@ class RemicionesController extends Controller
 
     public function Ingreso()
     {
-        $remisionesIngreso = RemisionIngreso::with('proveedor')->get();
+        $remisionesIngreso = RemisionesIngreso::with('proveedor')->get();
         return view('remiciones.ingreso', compact('remisionesIngreso'));
     }
 
@@ -227,7 +229,7 @@ class RemicionesController extends Controller
 
         DB::beginTransaction();
 
-        $remisionesIngreso = RemisionIngreso::create([
+        $remisionesIngreso = RemisionesIngreso::create([
             'proveedor_id' => $request->proveedor_id,
             'cliente_nit' => $request->cliente_nit,
             'sdp_id' => $request->sdp_id,
@@ -257,7 +259,7 @@ class RemicionesController extends Controller
 
     public function showIngreso($id)
     {
-        $remisionIngreso = RemisionIngreso::with('proveedor')->find($id);
+        $remisionIngreso = RemisionesIngreso::with('proveedor')->find($id);
 
         $items = $remisionIngreso->items;
 
@@ -266,7 +268,7 @@ class RemicionesController extends Controller
 
     public function editIngreso($id)
     {
-        $remisionIngreso = RemisionIngreso::with('proveedor', 'cliente', 'items')->findOrFail($id);
+        $remisionIngreso = RemisionesIngreso::with('proveedor', 'cliente', 'items')->findOrFail($id);
 
         $items = $remisionIngreso->items;
 
@@ -279,7 +281,7 @@ class RemicionesController extends Controller
 
             Log::info('actualizar remision ingreso', $request->all());
 
-            $remisionIngreso = RemisionIngreso::findOrFail($id);
+            $remisionIngreso = RemisionesIngreso::findOrFail($id);
 
             $request->validate([
                 'proveedor_id' => 'nullable|exists:proveedores,id',
@@ -342,7 +344,7 @@ class RemicionesController extends Controller
 
     public function destroyIngreso($id)
     {
-        $remisionIngreso = RemisionIngreso::findOrFail($id);
+        $remisionIngreso = RemisionesIngreso::findOrFail($id);
         $remisionIngreso->delete();
 
         return redirect()->route('remision.ingreso')->with('success', 'remision de ingreso correctamente eliminada');

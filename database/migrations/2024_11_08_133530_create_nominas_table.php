@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('periodo_pago');
             $table->decimal('devengado_trabajados', 20, 2)->nullable();
             $table->decimal('devengado_incapacidad', 20, 2)->nullable();
+            $table->decimal('devengado_incapacidad_eps', 20, 2)->nullable();
             $table->decimal('devengado_vacaciones', 20, 2)->nullable();
             $table->decimal('devengado_remunerados', 20, 2)->nullable();
             $table->decimal('pension', 20, 2)->nullable();

@@ -44,7 +44,7 @@
         
                         <div>
                             <label class="form-label" for="nombre">Numero de orden de compra</label>
-                            <select name="" id="" class="form-select">
+                            <select name="numero_orden_compra" id="numero_orden_compra" class="form-select">
                                 <option value="">Seleccione una orden de compra</option>
                                 @foreach ($ordenesCompras as $orden)
                                     <option value="{{ $orden->numero }}">{{ $orden->numero }}</option>
