@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CostosSdpProduccion;
 use App\Models\MateriaPrimaDirecta;
 use App\Models\MateriaPrimaIndirecta;
 use App\Models\SDP;
@@ -48,7 +49,9 @@ class CargarMateriaPrimaController extends Controller
             'codigo' => 'required|string',
             'cantidad' => 'required|numeric|min:1',
             'articulo_id' => 'required|exists:articulos,id',
-            'articulo_descripcion' => 'required|exists:articulos,descripcion'
+            'articulo_descripcion' => 'required|exists:articulos,descripcion',
+            'proveedor' => 'required|string',
+            'fecha_compra' => 'required|date'
         ]);
 
         // Buscar la SDP por su número
@@ -72,8 +75,15 @@ class CargarMateriaPrimaController extends Controller
                 'costos_produccion_id' => $costoProduccion->id,
                 'cantidad' => $validatedData['cantidad'],
                 'articulo_id' => $validatedData['articulo_id'],
-                'articulo_descripcion' => $validatedData['articulo_descripcion']
+                'articulo_descripcion' => $validatedData['articulo_descripcion'],
+                'proveedor' => $validatedData['proveedor'],
+                'fecha_compra' => $validatedData['fecha_compra']
             ]);
+
+            $materiaPrimaDirecta->update([
+                'precio_unit' => $request->input('precio_unit')
+            ]);
+
         } elseif (str_starts_with($validatedData['codigo'], 'MPI')) {
             // Buscar la materia prima indirecta por su código
             $materiaIndirecta = MateriaPrimaIndirecta::where('codigo', $validatedData['codigo'])->firstOrFail();
@@ -84,8 +94,15 @@ class CargarMateriaPrimaController extends Controller
                 'costos_produccion_id' => $costoProduccion->id,
                 'cantidad' => $validatedData['cantidad'],
                 'articulo_id' => $validatedData['articulo_id'],
-                'articulo_descripcion' => $validatedData['articulo_descripcion']
+                'articulo_descripcion' => $validatedData['articulo_descripcion'],
+                'proveedor' => $validatedData['proveedor'],
+                'fecha_compra' => $validatedData['fecha_compra']
             ]);
+
+            $materiaIndirecta->update([
+                'precio_unit' => $request->input('precio_unit')
+            ]);
+            
         } else {
             return redirect()->back()->withErrors(['codigo' => 'Código de materia prima no válido.']);
         }
@@ -101,12 +118,12 @@ class CargarMateriaPrimaController extends Controller
 
         // Obtener las materias primas directas asociadas a la SDP
         $materiasPrimasDirectas = $costoProduccion->materiasPrimasDirectas()
-            ->withPivot('cantidad', 'articulo_id', 'articulo_descripcion', 'materia_prima_directa_id', 'costos_produccion_id',)
+            ->withPivot('cantidad', 'proveedor', 'fecha_compra', 'articulo_id', 'articulo_descripcion', 'materia_prima_directa_id', 'costos_produccion_id',)
             ->get();
 
         // Obtener las materias primas indirectas asociadas a la SDP
         $materiasPrimasIndirectas = $costoProduccion->materiasPrimasIndirectas()
-            ->withPivot('cantidad', 'articulo_id', 'articulo_descripcion', 'materia_indirecta_id', 'costos_produccion_id')
+            ->withPivot('cantidad', 'proveedor', 'fecha_compra', 'articulo_id', 'articulo_descripcion', 'materia_indirecta_id', 'costos_produccion_id')
             ->get();
 
         // Pasar los datos a la vista

@@ -439,7 +439,7 @@ class NominaController extends Controller
             foreach ($cambios as $nominaId => $campos) {
                 $nomina = nomina::findOrFail($nominaId);
                 $diasCampos = ['dias_incapacidad', 'dias_incapacidad_eps', 'dias_vacaciones', 'dias_remunerados', 'dias_trabajados', 'dias_no_remunerados'];
-                $numerosCampos = ['bonificacion_auxilio', 'celular', 'anticipo', 'otro'];
+                $numerosCampos = ['bonificacion_auxilio', 'celular', 'anticipo', 'otro', 'total_dias'];
                 $stringCampos = ['desde', 'a'];
 
                 foreach ($campos as $campo => $valor) {
@@ -493,6 +493,7 @@ class NominaController extends Controller
                     'anticipo' => number_format($nomina->anticipo, 2, '.', ','),
                     'otro' => number_format($nomina->otro, 2, '.', ','),
                     'dias_no_remunerados' => $nomina->dias->dias_no_remunerados,
+                    'total_dias' => $nomina->total_dias,
                 ];
             }
 

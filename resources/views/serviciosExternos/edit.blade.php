@@ -25,8 +25,8 @@
                 @csrf
                 @method('PUT')
                 <div class="form-group">
-                    <label for="descripcion">Descripción</label>
-                    <input type="text" name="descripcion" id="descripcion" class="form-control" required value="{{ $serviciosExternos->descripcion }}">
+                    <label for="nombre">Descripción</label>
+                    <input type="text" name="nombre" id="nombre" class="form-control" required value="{{ $serviciosExternos->nombre }}">
                 </div>
                 <div class="form-group">
                     <label for="proveedor">Proveedor</label>

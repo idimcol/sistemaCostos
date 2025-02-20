@@ -99,7 +99,7 @@ class RemicionesController extends Controller
                 $item = Item::create(['descripcion' => $itemsData['descripcion']]);
             }
 
-            $remiciones->items()->attach($item->id, [
+            $remiciones->items()->attach($item->codigo, [
                 'cantidad' => $itemsData['cantidad']
             ]);
         }
@@ -169,7 +169,7 @@ class RemicionesController extends Controller
                     ]);
                 }
 
-                $items_ids[$item->id] = [
+                $items_ids[$item->codigo] = [
                     'cantidad' => $itemsData['cantidad'],
                 ];
             }
@@ -247,7 +247,7 @@ class RemicionesController extends Controller
                 $item = Item::create(['descripcion' => $itemsData['descripcion']]);
             }
 
-            $remisionesIngreso->items()->attach($item->id, [
+            $remisionesIngreso->items()->attach($item->codigo, [
                 'cantidad' => $itemsData['cantidad']
             ]);
         }
@@ -324,7 +324,7 @@ class RemicionesController extends Controller
                     ]);
                 }
 
-                $items_ids[$item->id] = [
+                $items_ids[$item->codigo] = [
                     'cantidad' => $itemsData['cantidad'],
                 ];
             }

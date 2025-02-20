@@ -40,6 +40,9 @@
                     <div class="mb-4">
                         <a href="{{ route('materiaIndirecta.index') }}" class="btn btn-info">lista de materias indirectas</a>
                     </div>
+                    <div class="mb-4">
+                        <a href="{{ route('servicios.sdp.lista') }}" class="btn btn-info">subir servicios SDP</a>
+                    </div>
                 </div>
             </div>
         </div>

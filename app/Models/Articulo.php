@@ -41,4 +41,9 @@ class Articulo extends Model
         return $this->belongsToMany(MateriaPrimaIndirecta::class, 'materia_prima_indirectas_costos', 'articulo_id', 'materia_indirecta_id')
                     ->withPivot('cantidad', 'articulo_descripcion', 'costos_produccion_id');
     }
+
+    public function costosProduccion()
+    {
+        return $this->hasMany(CostosSdpProduccion::class, 'articulo', 'id');
+    }
 }

@@ -16,6 +16,9 @@
             <span class="block sm:inline">{{ session('success') }}</span>
         </div>
     @endif
+    <div class="col-12 p">
+        <a href="{{route('home')}}" class="btn btn-primary">Home</a>
+    </div>
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6">
             <div class="mb-4">
@@ -66,9 +69,6 @@
                 </table>
             </div>
         </div>
-    </div>
-    <div class="col-12 p">
-        <a href="{{route('home')}}" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-3 rounded">volver</a>
     </div>
 </div>
 @stop

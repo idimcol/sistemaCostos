@@ -4,12 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use App\Models\CustomRole;
-use App\Models\Team;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Role;
 
@@ -19,7 +15,7 @@ class UsersController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('can:configuracion')->only('index');
+        $this->middleware('can:Configuracion')->only('index');
     }
 
     public function index()
@@ -33,29 +29,39 @@ class UsersController extends Controller
         return view('profile.index');
     }
 
-    public function updateUser(Request $request)
+    public function updateProfile(Request $request)
     {
         $user = Auth::user();
 
-        // Validar los datos
+        $user->name->$request->name;
+        $user->email->$request->email;
+        $user->save;
+
+        return redirect()->back()->with('success', 'Perfil actualizado con éxito');
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $user = Auth::user();
+        $repeatPassword = '';
+        $notification = '';
+
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
-            'password' => 'nullable|min:8|confirmed', // Solo si se quiere cambiar la contraseña
+            'current_password' => 'required|current_password',
+            'password' => 'required|confirmed|min:8',
         ]);
 
-        // Actualizar los datos
-        $user->name = $request->name;
-        $user->email = $request->email;
-
-        if ($request->password) {
-            $user->password = Hash::make($request->password);
+        if (Hash::check($request->password, $user->password)) {
+            $repeatPassword = 'la nueva contraseña no puede ser igual a la contraseña actual';
+        }else{
+            $notification = 'Contraseña actualizada con éxito';
         }
 
-        $user->save();
+        $request->user()->update([
+            'password' => bcrypt($request->password)
+        ]);
 
-        // Redirigir con un mensaje de éxito
-        return back()->with('success', 'Perfil actualizado correctamente.');
+        return back()->with(compact('repeatPassword', 'notification'));
     }
 
     public function show()

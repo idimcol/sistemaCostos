@@ -28,8 +28,7 @@
                             <th class="px-1">CODIGO</th>
                             <th class="px-1">DESCRIPCION</th>
                             <th class="px-1">PROVEEDOR</th>
-                            <th class="px-1">NUMERO DE FACTURA</th>
-                            <th class="px-1">NUMERO DE ORDEN DE COMPRA</th>
+                            <th class="px-1">FECHA DE COMPRA</th>
                             <th class="px-1">PRECIO UNITARIO</th>
                             <th class="px-1">CANTIDAD</th>
                             <th class="px-1">ARTICULO</th>
@@ -41,9 +40,8 @@
                                 <td class="px-1">{{ $index + 1 }}</td>
                                 <td class="px-1">{{ $materiaPrimaDirecta->codigo }}</td>
                                 <td class="px-1">{{ $materiaPrimaDirecta->descripcion }}</td>
-                                <td class="px-1">{{ $materiaPrimaDirecta->proveedor }}</td>
-                                <td class="px-1">{{ $materiaPrimaDirecta->numero_factura }}</td>
-                                <td class="px-1">{{ $materiaPrimaDirecta->numero_orden_compra }}</td>
+                                <td class="px-1">{{ $materiaPrimaDirecta->pivot->proveedor }}</td>
+                                <td class="px-1">{{ $materiaPrimaDirecta->pivot->fecha_compra}}</td>
                                 <td class="px-1">{{ $materiaPrimaDirecta->precio_unit }}</td>
                                 <td class="px-1">
                                     {{ $materiaPrimaDirecta->pivot->cantidad }}
@@ -63,8 +61,7 @@
                             <th class="px-1">CODIGO</th>
                             <th class="px-1">DESCRIPCION</th>
                             <th class="px-1">PROVEEDOR</th>
-                            <th class="px-1">NUMERO DE FACTURA</th>
-                            <th class="px-1">NUMERO DE ORDEN DE COMPRA</th>
+                            <th class="px-1">FECHA DE COMPRA </th>
                             <th class="px-1">PRECIO UNITARIO</th>
                             <th class="px-1">CANTIDAD</th>
                             <th class="px-1">ARTICULO</th>
@@ -76,9 +73,8 @@
                                 <td class="px-1">{{ $index + 1 }}</td>
                                 <td class="px-1">{{ $materiaPrimaIndirecta->codigo }}</td>
                                 <td class="px-1">{{ $materiaPrimaIndirecta->descripcion }}</td>
-                                <td class="px-1">{{ $materiaPrimaIndirecta->proveedor }}</td>
-                                <td class="px-1">{{ $materiaPrimaIndirecta->numero_factura }}</td>
-                                <td class="px-1">{{ $materiaPrimaIndirecta->numero_orden_compra }}</td>
+                                <td class="px-1">{{ $materiaPrimaIndirecta->pivot->proveedor }}</td>
+                                <td class="px-1">{{ $materiaPrimaIndirecta->pivot->fecha_compra }}</td>
                                 <td class="px-1">{{ $materiaPrimaIndirecta->precio_unit }}</td>
                                 <td class="px-1">
                                     {{ $materiaPrimaIndirecta->pivot->cantidad }}

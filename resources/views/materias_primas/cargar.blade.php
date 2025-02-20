@@ -26,6 +26,7 @@
                                 <div class="col-6">
                                     <div class="materias-container mb-4">
                                         <div class="mb-4">
+                                            <label for="materia">Busca la materia prima (MPD/MPI)</label>
                                             <input type="text" id="buscar_materia" class="buscar_materia px-3 py-2 form-control" placeholder="buscar materia...">
                                             <div class="suggestionsContainer" id="suggestionsContainer">
                                             </div>
@@ -40,13 +41,24 @@
                                         </div>
                                         <div class="mb-4">
                                             <label for="precio_unit" class="form-label">precio unitario</label>
-                                            <input type="text" id="precio_unit" name="precio_unit" class=" form-control px-3 py-2" readonly>
+                                            <input type="number" step="0.001" min="0" id="precio_unit" name="precio_unit" class=" form-control px-3 py-2" required>
                                         </div>
                                     </div>
                                     <div class="mb-4">
                                         <label for="cantidad" class="form-label">cantidad</label>
-                                        <input type="text" id="cantidad" name="cantidad" class=" form-control px-3 py-2">
+                                        <input type="text" id="cantidad" name="cantidad" class=" form-control px-3 py-2" required>
                                     </div>
+
+                                    <div class="mb-4">
+                                        <label for="">Proveedor</label>
+                                        <input type="text" name="proveedor" class="form-control" required>
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <label for="">Fecha de compra</label>
+                                        <input type="date" name="fecha_compra" class="form-control" required>
+                                    </div>
+
                                     <div class="mb-4">
                                         <label for="valor" class="form-label">valor</label>
                                         <input type="text" id="valor" name="valor" class=" form-control px-3 py-2" readonly>
@@ -55,7 +67,7 @@
                                 <div class="col-6">
                                     <div class="form-group">
                                         <label for="articulo_id">Selecciona un artículo</label>
-                                        <select name="articulo_id" id="articulo_id" class="form-control" onchange="updateDescripcion()">
+                                        <select name="articulo_id" id="articulo_id" class="form-control" onchange="updateDescripcion()" required>
                                             <option value="">Selecciona un artículo</option>
                                             @foreach ($articulos as $articulo)
                                                 <option value="{{ $articulo->id }}" data-descripcion="{{ $articulo->descripcion }}">{{ $articulo->descripcion }}</option>

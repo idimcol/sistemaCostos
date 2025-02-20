@@ -33,23 +33,14 @@ class MateriaPrimaDirectaController extends Controller
     {
         $request->validate([
             'descripcion' => 'required|string',
-            'proveedor_id' => 'required|exists:proveedores,nit',
-            'proveedor' => 'required|string',
-            'numero_factura' => 'required|string',
-            'numero_orden_compra' => 'required|exists:orden_compras,numero',
             'precio_unit' => 'required|numeric',
         ]);
 
-        $materia_Prima_directa = new MateriaPrimaDirecta([
-            'descripcion' => $request->input('descripcion'),
-            'proveedor_id' => $request->input('proveedor_id'),
-            'proveedor' => $request->input('proveedor'),
-            'numero_factura' => $request->input('numero_factura'),
-            'numero_orden_compra' => $request->input('numero_orden_compra'),
-            'precio_unit' => $request->input('precio_unit'),
+        $materia_Prima_directa = MateriaPrimaDirecta::create([
+            'descripcion' => $request->descripcion,
+            'precio_unit' => $request->precio_unit,
             'valor' => 0
         ]);
-        $materia_Prima_directa->save();
 
         return redirect()->route('materias_primas.index')->with('success', 'la materia prima directa se ha creada exitosamente');
     }
@@ -65,9 +56,6 @@ class MateriaPrimaDirectaController extends Controller
     {
         $request->validate([
             'descripcion' => 'required|string',
-            'proveedor' => 'required|string',
-            'numero_factura' => 'required|string',
-            'numero_orden_compra' => 'required|string',
             'precio_unit' => 'required|numeric',
         ]);
 
@@ -75,14 +63,11 @@ class MateriaPrimaDirectaController extends Controller
 
         $materia_Prima_directa->update([
             'descripcion' => $request->input('descripcion'),
-            'proveedor' => $request->input('proveedor'),
-            'numero_factura' => $request->input('numero_factura'),
-            'numero_orden_compra' => $request->input('numero_orden_compra'),
             'precio_unit' => $request->input('precio_unit'),
             'valor' => 0
         ]);
 
-        return redirect()->route('materias_primas.index')->with('success', 'la materia prima directa actualizada exitosamente');
+        return redirect()->route('materiaDirecta.index')->with('success', 'la materia prima directa actualizada exitosamente');
     }
 
     public function destroy($id)
@@ -90,6 +75,6 @@ class MateriaPrimaDirectaController extends Controller
         $materia_Prima_directa = MateriaPrimaDirecta::findOrFail($id);
         $materia_Prima_directa->delete();
 
-        return redirect()->route('materias_primas.index')->with('success', 'la materia prima directa eliminada exitosamente');
+        return redirect()->back()->with('success', 'la materia prima directa eliminada exitosamente');
     }
 }

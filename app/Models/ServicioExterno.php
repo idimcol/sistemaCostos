@@ -9,8 +9,10 @@ class ServicioExterno extends Model
 {
     use HasFactory;
 
+    protected $table='servicio_externos';
+
     protected $fillable = [
-        'descripcion',
+        'nombre',
         'proveedor',
         'valor_hora'
     ];

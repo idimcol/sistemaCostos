@@ -29,17 +29,11 @@ class MateriaPrimaIndirectaController extends Controller
     {
         $request->validate([
             'descripcion' => 'required|string',
-            'proveedor' => 'required|string',
-            'numero_factura' => 'required|string',
-            'numero_orden_compra' => 'required|string',
             'precio_unit' => 'required|numeric',
         ]);
 
         $materia_Prima_indirecta = new MateriaPrimaIndirecta([
             'descripcion' => $request->input('descripcion'),
-            'proveedor' => $request->input('proveedor'),
-            'numero_factura' => $request->input('numero_factura'),
-            'numero_orden_compra' => $request->input('numero_orden_compra'),
             'precio_unit' => $request->input('precio_unit'),
             'valor' => 0
         ]);
@@ -59,9 +53,6 @@ class MateriaPrimaIndirectaController extends Controller
     {
         $request->validate([
             'descripcion' => 'required|string',
-            'proveedor' => 'required|string',
-            'numero_factura' => 'required|string',
-            'numero_orden_compra' => 'required|string',
             'precio_unit' => 'required|numeric',
         ]);
 
@@ -69,15 +60,12 @@ class MateriaPrimaIndirectaController extends Controller
 
         $materia_Prima_indirecta->update([
             'descripcion' => $request->input('descripcion'),
-            'proveedor' => $request->input('proveedor'),
-            'numero_factura' => $request->input('numero_factura'),
-            'numero_orden_compra' => $request->input('numero_orden_compra'),
             'precio_unit' => $request->input('precio_unit'),
             'valor' => 0
         ]);
         
 
-        return redirect()->route('materias_primas.index')->with('success', 'la materia prima indirecta actualizada exitosamente');
+        return redirect()->route('materiaIndirecta.index')->with('success', 'la materia prima indirecta actualizada exitosamente');
     }
 
     public function destroy($id)
@@ -85,6 +73,6 @@ class MateriaPrimaIndirectaController extends Controller
         $materia_Prima_indirecta = MateriaPrimaIndirecta::findOrFail($id);
         $materia_Prima_indirecta->delete();
 
-        return redirect()->route('materias_primas.index')->with('success', 'la materia prima indirecta eliminada exitosamente');
+        return redirect()->back()->with('success', 'la materia prima indirecta eliminada exitosamente');
     }
 }

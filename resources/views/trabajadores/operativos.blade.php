@@ -13,11 +13,11 @@
     <div class="col-12 px-20 mb-4">
         <a href="{{ route('trabajadores.index') }}" class="btn btn-primary">volver</a>
     </div>
-    <div class="flex flex-col items-end justify-end px-20 mb-4">
+    {{-- <div class="flex flex-col items-end justify-end px-20 mb-4">
         <a href="{{ route('horas-extras.index') }}" id="exportToExcel" class="btnE btn btn-info">
             Bonos
         </a>
-    </div>
+    </div> --}}
     @if (session('success'))
         <div id="success-message" class="alert alert-success" role="alert">
             <span class="block sm:inline">{{ session('success') }}</span>

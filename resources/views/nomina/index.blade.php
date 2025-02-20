@@ -19,7 +19,7 @@
         <a href="{{ route('gestion-humana') }}" class="btn btn-primary">volver</a>
     </div>
     <div class="flex justify-end mb-4">
-        <a href="{{ route('configuraciones.index') }}" class="btn btn-info">ver porcentajes de salud y pencion</a>
+        <a href="{{ route('configuraciones.index') }}" class="btn btn-info">ver porcentajes de salud y pension</a>
     </div>
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div class="dark:bg-gray-300 overflow-hidden shadow-xl sm:rounded-lg p-6">

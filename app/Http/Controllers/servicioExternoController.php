@@ -32,13 +32,13 @@ class servicioExternoController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'descripcion' => 'required|string',
+            'nombre' => 'required|string',
             'proveedor' => 'required|string',
             'valor_hora' => 'required|string',
         ]);
 
         $serviciosExternos = new ServicioExterno([
-            'descripcion' => $request->input('descripcion'),
+            'nombre' => $request->input('nombre'),
             'proveedor' => $request->input('proveedor'),
             'valor_hora' => $request->input('valor_hora'),
         ]);
@@ -56,14 +56,14 @@ class servicioExternoController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
-            'descripcion' => 'required|string',
+            'nombre' => 'required|string',
             'proveedor' => 'required|string',
             'valor_hora' => 'required|string',
         ]);
 
         $serviciosExternos = ServicioExterno::findOrFail($id);
         $serviciosExternos->update([
-            'descripcion' => $request->input('descripcion'),
+            'nombre' => $request->input('nombre'),
             'proveedor' => $request->input('proveedor'),
             'valor_hora' => $request->input('valor_hora'),
         ]);

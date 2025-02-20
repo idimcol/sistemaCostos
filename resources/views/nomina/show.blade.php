@@ -142,10 +142,10 @@
                                             <td class="px-4 py-2 border c" contenteditable="true" id="dias_incapacidad_eps" data-field="dias_incapacidad_eps" data-nomina-id="{{ $nomina->id }}">{{ $nomina->dias->dias_incapacidad_eps }}</td>
                                             <td class="px-4 py-2 border c" contenteditable="true" id="dias_vacaciones" data-field="dias_vacaciones" data-nomina-id="{{ $nomina->id }}">{{ $nomina->dias->dias_vacaciones }}</td>
                                             <td class="px-4 py-2 border c" contenteditable="true" id="dias_remunerados" data-field="dias_remunerados" data-nomina-id="{{ $nomina->id }}">{{ $nomina->dias->dias_remunerados }}</td>
-                                            <td class="px-4 py-2 border c">{{ $nomina->total_dias }}</td>
+                                            <td class="px-4 py-2 border c" contenteditable="true" id="total_dias" data-nomina-id="{{ $nomina->id }}">{{ $nomina->total_dias }}</td>
                                             <td class="px-4 py-2 border c" contenteditable="true" data-field="bonificacion_auxilio" data-nomina-id="{{ $nomina->id }}">{{ number_format($nomina->bonificacion_auxilio, 2, ',', '.') }}</td>
                                             <td class="px-4 py-2 border c" data-field="devengado_trabajados" data-nomina-id="{{ $nomina->id }}">{{ number_format($nomina->devengado_trabajados, 2, ',', '.') }}</td>
-                                            <td class="px-4 py-2 border c" data-field="devengado_incapacidad" data-nomina-id="{{ $nomina->id }}">{{ number_format($nomina->devengado_incapacidad, 2, ',', '.') }}</td>
+                                            <td class="px-4 py-2 border c" d    ata-field="devengado_incapacidad" data-nomina-id="{{ $nomina->id }}">{{ number_format($nomina->devengado_incapacidad, 2, ',', '.') }}</td>
                                             <td class="px-4 py-2 border c" data-field="devengado_incapacidad_eps" data-nomina-id="{{ $nomina->id }}">{{ number_format($nomina->devengado_incapacidad_eps, 2, ',', '.') }}</td>
                                             <td class="px-4 py-2 border c" data-field="devengado_vacaciones" data-nomina-id="{{ $nomina->id }}">{{ number_format($nomina->devengado_vacaciones, 2, ',', '.') }}</td>
                                             <td class="px-4 py-2 border c" data-field="devengado_remunerados" data-nomina-id="{{ $nomina->id }}">{{ number_format($nomina->devengado_remunerados, 2, ',', '.') }}</td>

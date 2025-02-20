@@ -47,7 +47,7 @@ class TiemposProduccion extends Model
 
     public function costosProduccion()
     {
-        return $this->hasMany(CostosSdpProduccion::class, 'tiempos_id');
+        return $this->hasOne(CostosSdpProduccion::class, 'tiempos_id', 'id');
     }
 
     public function trabajador()

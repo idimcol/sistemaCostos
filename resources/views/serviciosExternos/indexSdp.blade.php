@@ -1,15 +1,15 @@
 @extends('adminlte::page')
 
-@section('title', 'lista sdp')
+@section('title', 'home')
 
 @section('content_header')
-<h2 class="font-semibold text-xl text-gray-800 leading-tight">
-    {{ __('Materias primas') }}
+<h2 class="font-semibold text-xl text-gray-800 leading-tight uppercase">
+    {{ __('lista de SDP para subir servicios') }}
 </h2>
 @stop
 
 @section('content')
-    <div class="p-12">
+    <div class="container">
         <div class="mb-4">
             <a href="{{ route('materias_primas.index') }}" class="btn btn-primary">volver</a>
         </div>
@@ -25,8 +25,8 @@
                         <thead>
                             <tr class="bg-gray-600 text-gray-200">
                                 <th class="px-6 py-3 border-b" >Numero de SDP</th>
-                                <th class="px-6 py-3 border-b" >Cargar materia prima</th>
-                                <th class="px-6 py-3 border-b" >Lista de materias primas cargadas</th>
+                                <th class="px-6 py-3 border-b" >Subir Servicio</th>
+                                <th class="px-6 py-3 border-b" >Lista de Servicios subidos</th>
                             </tr>
                         </thead>
                         <tbody >
@@ -34,10 +34,10 @@
                                 <tr class="dark:bg-gray-300 text-gray-700">
                                     <td class="px-6 py-4 border-b">{{ $sdp->numero_sdp }}</td>
                                     <td class="px-6 py-4 border-b">
-                                        <a href="{{ route('cargar.materias.form', ['numero_sdp' => $sdp->numero_sdp]) }}" class="btn btn-primary">Cargar Materias Primas</a>
+                                        <a href="{{ route('subirServicios.form', $sdp->numero_sdp) }}" class="btn btn-primary">subir servicio</a>
                                     </td>
                                     <td class="px-6 py-4 border-b">
-                                        <a href="{{ route('verMateriasPrimas', ['numero_sdp' => $sdp->numero_sdp]) }}" class="btn btn-info">ver lista</a>
+                                        <a href="#" class="btn btn-info">ver lista</a>
                                     </td>
                                 </tr>
                             @endforeach
@@ -52,39 +52,20 @@
 @section('css')
     {{-- Add here extra stylesheets --}}
     {{-- <link rel="stylesheet" href="/css/admin_custom.css"> --}}
-    <style>
-        .container {
-            overflow-y: auto;
-            max-height: 500px;
-        }
-        .card-body {
-            background: #bbbbbb !important;
-        }
-
-        .content, .content-header {
-            background: #fff !important;
-        }
-
-        .content {
-            height: 87vh;
-        }
-
-        h2 {
-            text-transform: uppercase;
-            font-size: 18px;
-        }
-    </style>
-@stop
-
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+        crossorigin="anonymous"
+    />
 @section('js')
     <script src="https://cdn.tailwindcss.com"></script>
     <script> console.log("Hi, I'm using the Laravel-AdminLTE package!"); </script>
-    <script>
-        setTimeout(function() {
-            var successMessage = document.getElementById('success-message');
-            if (successMessage) {
-                successMessage.style.display = 'none';
-            }
-        }, 10000);
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+            integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+            crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+            integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+            crossorigin="anonymous"></script>
 @stop

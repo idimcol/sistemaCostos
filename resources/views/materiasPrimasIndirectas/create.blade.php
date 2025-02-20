@@ -21,25 +21,10 @@
                         <label class="form-label" for="nombre">Descripcion</label>
                         <input type="text" name="descripcion" id="descripcion" class="form-control" required>
                     </div>
-    
-                    <div>
-                        <label class="form-label" for="nombre">proveedor</label>
-                        <input type="text" name="proveedor" id="proveedor" class="form-control" required>
-                    </div>
-    
-                    <div>
-                        <label class="form-label" for="nombre">Numero de Factura</label>
-                        <input type="text" name="numero_factura" id="numero_factura" class="form-control" required>
-                    </div>
-    
-                    <div>
-                        <label class="form-label" for="nombre">Numero de orden de compra</label>
-                        <input type="text" name="numero_orden_compra" id="numero_orden_compra" class="form-control" required>
-                    </div>
                     
                     <div>
                         <label class="form-label" for="precio_unitario">Precio Unitario</label>
-                        <input type="number" name="precio_unit" id="precio_unit" class="form-control" required>
+                        <input type="number" name="precio_unit" step="0.001" min="0" id="precio_unit" class="form-control" required>
                     </div>
 
                     <div class="flex items-center justify-between mt-4">

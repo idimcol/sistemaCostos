@@ -139,13 +139,13 @@
                             </td>
 
                             <td class="border px-1">
-                                
+                                {{ number_format($totalDirectas, 2, ',', '.') }}
                                 <button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#materias_primas">
                                     Detalles
                                 </button>
                             </td>
                             <td class="border px-1">
-                                
+                                {{ number_format($totalIndirectas, 2, ',', '.') }}
                                 <button type="button" class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#materias_primas_indirectas">
                                     Detalles
                                 </button>
@@ -162,12 +162,12 @@
                     <tfoot>
                         <tr class="bg-gray-400 border border-gray-400">
                             <td class="border p-1">Utilidad Bruta</td>
-                            <td class="border p-1 text-right"></td>
+                            <td class="border p-1 text-right">{{ number_format($utilidadBruta, 2, ',', '.') }}</td>
                         </tr>
                         <tr class="bg-gray-400 border border-gray-400">
                             <td class="border p-1">MARGEN BRUTO</td>
                             <td class="border p-1 text-right">
-                                %
+                                {{ number_format($margenBruto, 2, ',', '.') }}%
                             </td>
                         </tr>
                     </tfoot>
@@ -286,13 +286,20 @@
                         </tr>
                     </thead>
                     <tbody>
-                        
+                        @foreach ($materiasPrimasDirectasSubtotales as $materiaPrimaDirecta)
+                            <tr>
+                                <td>{{ $materiaPrimaDirecta->codigo }}</td>
+                                <td>{{ $materiaPrimaDirecta->descripcion }}</td>
+                                <td>{{ $materiaPrimaDirecta->pivot->cantidad }}</td>
+                                <td>{{ number_format($materiaPrimaDirecta->precio_unit, 2, ',', '.') }}</td>
+                            </tr>
+                        @endforeach
                     </tbody>
                     <tfoot>
                         <tr>
                             <td colspan="3">total</td>
                             <td>
-                                
+                                {{ number_format($totalDirectas, 2, ',', '.') }}
                             </td>
                         </tr>
                     </tfoot>
@@ -304,45 +311,7 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="operariosModal" tabindex="-1" aria-labelledby="operariosModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="operariosModalLabel">Operarios</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="card">
-                    <div class="card-body">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Operario</th>
-                                    <th>Sueldo</th>
-                                    <th>Horas Trabajadas</th>
-                                    <th>Horas Mes</th>
-                                    <th>Mano de Obra Total</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td colspan="4">total de mano de obra nomina</td>
-                                    <td></td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-            </div>
-        </div>
-    </div>
-</div>
+
 <div class="modal fade" id="materias_primas_indirectas" tabindex="-1" aria-labelledby="materias_primas_indirectasLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -361,13 +330,20 @@
                         </tr>
                     </thead>
                     <tbody>
-                        
+                        @foreach ($materiasPrimasIndirectasSubtotales as $materiaPrimaIndirecta)
+                            <tr>
+                                <td>{{ $materiaPrimaIndirecta->codigo }}</td>
+                                <td>{{ $materiaPrimaIndirecta->descripcion }}</td>
+                                <td>{{ $materiaPrimaIndirecta->pivot->cantidad }}</td>
+                                <td>{{ number_format($materiaPrimaIndirecta->precio_unit, 2, ',', '.') }}</td>
+                            </tr>
+                        @endforeach
                     </tbody>
                     <tfoot>
                         <tr>
                             <td colspan="3">total</td>
                             <td>
-                                
+                                {{ number_format($totalIndirectas, 2, ',', '.') }}
                             </td>
                         </tr>
                     </tfoot>
@@ -401,24 +377,24 @@
                             <td>
                                 <ol>
                                     <li>
-                                        MOI: 
+                                        MOI: {{ number_format($moi, 2, ',', '.') }}
                                     </li>
                                     <li>
-                                        GOI: 
+                                        GOI: {{ number_format($goi, 2, ',', '.') }}
                                     </li>
                                     <li>
-                                        OCI: 
+                                        OCI: {{ number_format($oci, 2, ',', '.') }}
                                     </li>
                                 </ol>
                             </td>
                             <td>
-                                
+                                {{ number_format($sumaCif, 2, ',', '.') }}
                             </td>
                             <td>
-                                
+                                {{ $totalHoras }}
                             </td>
                             <td>
-                                
+                                {{ number_format($totalCif, 2, ',', '.') }}
                             </td>
                         </tr>
                     </tbody>

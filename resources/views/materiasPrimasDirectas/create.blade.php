@@ -14,47 +14,16 @@
             <div class="card">
                 <div class="card-body">
                     <form action="{{ route('materiasPrimasDirectas.store') }}"  method="POST" class="max-w-sm mx-auto space-y-4">
-    
                         @csrf
     
                         <div>
                             <label class="form-label" for="nombre">Descripcion</label>
                             <input type="text" name="descripcion" id="descripcion" class="form-control" required>
                         </div>
-
-                        <div>
-                            <label class="form-label" for="nombre">proveedor NIT</label>
-                            <select name="proveedor_id" id="proveedorSelect" class="form-select">
-                                <option value="">Seleccione un proveedor</option>
-                                @foreach ($proveedores as $proveedor)
-                                    <option value="{{ $proveedor->nit }}" data-nombre="{{ $proveedor->nombre }}">{{ $proveedor->nit }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-        
-                        <div>
-                            <label class="form-label" for="nombre">proveedor</label>
-                            <input type="text" name="proveedor" id="proveedor" class="form-control" required>
-                        </div>
-        
-                        <div>
-                            <label class="form-label" for="nombre">Numero de Factura</label>
-                            <input type="text" name="numero_factura" id="numero_factura" class="form-control" required>
-                        </div>
-        
-                        <div>
-                            <label class="form-label" for="nombre">Numero de orden de compra</label>
-                            <select name="numero_orden_compra" id="numero_orden_compra" class="form-select">
-                                <option value="">Seleccione una orden de compra</option>
-                                @foreach ($ordenesCompras as $orden)
-                                    <option value="{{ $orden->numero }}">{{ $orden->numero }}</option>
-                                @endforeach
-                            </select>
-                        </div>
                         
                         <div>
                             <label class="form-label" for="precio_unitario">Precio Unitario</label>
-                            <input type="number" name="precio_unit" id="precio_unit" class="form-control" required>
+                            <input type="number" step="0.001" min="0" name="precio_unit" id="precio_unit" class="form-control" required>
                         </div>
 
                         <div class="flex items-center justify-between mt-4">

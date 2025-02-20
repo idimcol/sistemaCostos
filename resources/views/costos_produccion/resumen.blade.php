@@ -19,74 +19,74 @@
     <div class="container">
         <div class="card">
             <div class="card-body">
-                <h1 class="text-center">RESUMEN DE COSTOS DE PRODUCCIÓN DE LA SDP {{ $sdp->numero_sdp }}</h1>
-                <h2>ANÁLISIS DE COSTOS</h2>
-                <div class="flex flex-wrap justify-center gap-4">
-                    <div class="card p-4 border rounded">
-                        <h3>* Valor de venta</h3>
-                        <strong>Artículos</strong>
-                        @foreach ($articulosTiemposConSubtotales as $index => $articulo)
-                            <p>
-                                <strong>| {{ $index + 1 }} |</strong><br>
-                                <strong>Descripción del artículo:</strong> {{ $articulo->descripcion }}<br>
-                                <strong>Cantidad del artículo:</strong> {{ $articulo->pivot->cantidad }}<br>
-                                <strong>Valor del artículo:</strong> {{ number_format($articulo->subtotal, 2, ',', '.') }}<br>
-                            </p>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Servicio</th>
+                            <th>Operario</th>
+                            <th>Horas</th>
+                            <th>Mano de Obra Inirecta</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($costosProduccion as $key => $detalle)
+                            @php
+                                [$servicio, $operario, $articulo] = explode('-', $key);
+                            @endphp
+                            <tr>
+                                <td>{{ $servicio }}</td>
+                                <td>{{ $operario }}</td>
+                                <td>{{ $detalle['horas'] }}</td>
+                                <td>{{ $detalle['mano_obra_directa'] }}</td>
+                            </tr>
                         @endforeach
-                        <strong>TOTAL:</strong> {{ number_format($total, 2, ',', '.') }}
-                    </div>
-
-                    <div class="card p-4 border rounded">
-                        <h3>* Mano de obra directa</h3>
-                        @foreach ($operariosConTiempos as $index => $item)
-                            <p>
-                                <strong>| {{ $index + 1 }} |</strong><br>
-                                <strong>Nombre del operario:</strong> {{ $item['nombre'] }}<br>
-                                <strong>Horas trabajadas:</strong> {{ $item['horas'] }}<br>
-                                <strong>Valor de la mano de obra:</strong> {{ number_format($item['mano_obra_servicio'], 2, ',', '.') }}<br>
-                            </p>
-                        @endforeach
-                        <strong>TOTAL:</strong> {{ number_format($totalManoObra, 2, ',', '.') }}
-                    </div>
-                    <div class="card p-4 border rounded">
-                        <h3>* Materias primas</h3>
-                        <strong>Directas</strong>
-                        @foreach ($materiasPrimasDirectas as $index => $materiaDirecta)
-                            <p>
-                                <strong>| {{ $index + 1 }} |</strong><br>
-                                <strong>Descripción:</strong> {{ $materiaDirecta->descripcion }}<br>
-                                <strong>Cantidad:</strong> {{ $materiaDirecta->pivot->cantidad }}<br>
-                                <strong>Precio unitario:</strong> {{ number_format($materiaDirecta->precio_unit, 2, ',', '.') }}<br>
-                                <strong>Total:</strong> {{ number_format($totalDirectas, 2, ',', '.') }}<br>
-                            </p>
-                        @endforeach
-                        <strong>Indirectas</strong>
-                        @foreach ($materiasPrimasIndirectas as $index => $materiaIndirecta)
-                            <p>
-                                <strong>| {{ $index + 1 }} |</strong><br>
-                                <strong>Descripción:</strong> {{ $materiaIndirecta->descripcion }}<br>
-                                <strong>Cantidad:</strong> {{ $materiaIndirecta->pivot->cantidad }}<br>
-                                <strong>Precio unitario:</strong> {{ number_format($materiaIndirecta->precio_unit, 2, ',', '.') }}<br>
-                                <strong>Total:</strong> {{ number_format($totalIndirectas, 2, ',', '.') }}<br>
-                            </p>
-                        @endforeach
-                    </div>
-
-                    <div class="card p-4 border rounded">
-                        <h3>* Costos indirectos de fábrica (CIF)</h3>
-                        <strong>Gasto Operativo Indirecto (GOI):</strong> {{ number_format($GOI, 2, ',', '.') }}<br>
-                        <strong>Mano de Obra Indirecta (MOI):</strong> {{ number_format($MOI, 2, ',', '.') }}<br>
-                        <strong>Otros costos indirectos (CMI):</strong> {{ number_format($OCI, 2, ',', '.') }}<br>
-                        <h3>* Total de horas de los operarios</h3>
-                        horas: {{ number_format($totalHoras, 2, ',', '.') }}<br>
-                        <h3>* Total CIF</h3>
-                        CIF: {{ number_format($totalCIF, 2, ',', '.') }}<br>
-                        <h2>Utilidad bruta</h2>
-                        valor: {{ number_format($utilidadBruta, 2, ',', '.') }}<br>
-                        <h2>Margen bruto</h2>
-                        valor: {{ number_format($margenBruto, 2, ',', '.') }}
-                    </div>
-                </div>
+                    </tbody>
+                    <hr>
+                    <tfoot>
+                        <tr>
+                            <th>Materias primas directas</th>
+                            <th>Materias primas indirectas</th>
+                            <th>Cif</th>
+                            <th>Utilidad Bruta</th>
+                            <th>Margen Bruto</th>
+                        </tr>
+                        <tr>
+                            <td>
+                                @foreach ($materiasPrimasDirectasSubtotales as $materiaPrimaDirecta)
+                                    <p>
+                                        <b>Codigo: </b>{{ $materiaPrimaDirecta->codigo }},
+                                        <b>Descripcion: </b>{{ $materiaPrimaDirecta->descripcion }},
+                                        <b>Proveedor: </b>{{ $materiaPrimaDirecta->pivot->proveedor }}, <br>
+                                        <b>Fecha de compra: </b>{{ $materiaPrimaDirecta->pivot->fecha_compra }},
+                                        <b>Cantidad: </b>{{ $materiaPrimaDirecta->pivot->cantidad }}, <br>
+                                        <b>Precio Unitario</b>{{ number_format($materiaPrimaDirecta->precio_unit, 2, ',', '.') }}
+                                    </p>
+                                    <hr class="border border-primary border-3 opacity-75">
+                                @endforeach
+                                <hr class="border border-success border-3 opacity-50">
+                                <b>Total</b> {{ number_format($totalDirectas, 2, ',', '.') }}
+                            </td>
+                            <td>
+                                @foreach ($materiasPrimasIndirectasSubtotales as $materiaPrimaIndirecta)
+                                    <p>
+                                        <b>Codigo: </b>{{ $materiaPrimaIndirecta->codigo }},
+                                        <b>Descripcion: </b>{{ $materiaPrimaIndirecta->descripcion }},
+                                        <b>Proveedor: </b>{{ $materiaPrimaIndirecta->pivot->proveedor }}, <br>
+                                        <b>Fecha de Compra: </b>{{ $materiaPrimaIndirecta->pivot->fecha_compra }},
+                                        <b>Cantidad: </b>{{ $materiaPrimaIndirecta->pivot->cantidad }}, <br>
+                                        <b>Precio unitario</b>{{ number_format($materiaPrimaIndirecta->precio_unit, 2, ',', '.') }}
+                                    </p>
+                                    <hr class="border border-primary border-3 opacity-75">
+                                @endforeach
+                                <hr class="border border-success border-3 opacity-50">
+                                <b>Total</b> {{ number_format($totalIndirectas, 2, ',', '.') }}
+                            </td>
+                            <td>{{ number_format($totalCif, 2, ',', '.') }}</td>
+                            <td>{{ number_format($utilidadBruta, 2, ',', '.') }}</td>
+                            <td>{{ number_format($margenBruto, 2, ',', '.') }}%</td>
+                        </tr>
+                    </tfoot>
+                </table>
             </div>
         </div>
     </div>
@@ -95,7 +95,12 @@
 
 @section('css')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
+<link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+        crossorigin="anonymous"
+    />
     {{-- Add here extra stylesheets --}}
     {{-- <link rel="stylesheet" href="/css/admin_custom.css"> --}}
     <style>
@@ -166,4 +171,11 @@
             window.print();
         });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+    integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+    crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+        crossorigin="anonymous"></script>
 @stop

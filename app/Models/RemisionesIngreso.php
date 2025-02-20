@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Departamento;
 use App\Traits\codigoREM_ING;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -40,7 +41,7 @@ class RemisionesIngreso extends Model
 
     public function items()
     {
-        return $this->belongsToMany(Item::class, 'items_ingreso', 'remision_ingreso_id', 'item_id')
+        return $this->belongsToMany(Item::class, 'items_ingreso', 'remision_ingreso_id', 'item_id', 'codigo', 'codigo')
                     ->withPivot('cantidad');
     }
 

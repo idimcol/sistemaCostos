@@ -24,7 +24,7 @@
                     <table id="articulos" class="table table-striped">
                         <thead>
                             <tr>
-                                <th>#</th>
+                                <th>id</th>
                                 <th>codigo</th>
                                 <th>descripcion</th>
                                 <th>material</th>
@@ -37,7 +37,7 @@
                             @foreach ($articulos as $index => $articulo)
                             <tr>
                                 <td>
-                                    {{ $index + 1 }}
+                                    {{ $articulo->id }}
                                 </td>
                                 <td>{{ $articulo->codigo }}</td>
                                 <td>{{ $articulo->descripcion }}</td>

@@ -37,7 +37,7 @@
                             <th class="px-2 py-1 border">hora de fin</th>
                             <th class="px-2 py-1 border">codigo del servicio</th>
                             <th class="px-2 py-1 border">proceso/servicio</th>
-                            <th class="px-2 py-1 border">valor hora del sevicio</th>
+                            <th class="px-2 py-1 border">valor hora del servicio</th>
                             <th class="px-2 py-1 border">horas</th>
                             <th class="px-2 py-1 border">valor total por las horas trabajadas</th>
                             <th class="px-2 py-1 border">sdp</th>

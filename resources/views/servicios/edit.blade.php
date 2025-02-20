@@ -80,19 +80,6 @@
         integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
         crossorigin="anonymous"
     ></script>
-    <script>
-        document.getElementById("selectAllBtn").addEventListener("click", function() {
-            const checkboxes = document.querySelectorAll(".sdp-checkbox");
-            const allSelected = Array.from(checkboxes).every(checkbox => checkbox.checked);
-    
-            checkboxes.forEach(checkbox => {
-                checkbox.checked = !allSelected;
-            });
-    
-            // Cambiar el texto del botón dependiendo del estado
-            this.textContent = allSelected ? "Seleccionar todos" : "Deseleccionar todos";
-        });
-    </script>
 </script>
 @stop
 

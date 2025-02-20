@@ -44,6 +44,11 @@ class CostosSdpProduccion extends Model
         return $this->belongsTo(Cif::class, 'cif_id');
     }
 
+    public function articulo()
+    {
+        return $this->belongsTo(Articulo::class, 'articulo', 'id');
+    }
+
     public function materiasPrimasDirectas()
     {
         return $this->belongsToMany(MateriaPrimaDirecta::class, 'materia_prima_directa_costos', 'costos_produccion_id', 'materia_prima_directa_id')

@@ -21,7 +21,7 @@ class MateriaPrimaDirecta extends Model
         'numero_orden_compra',
         'precio_unit',
         'valor',
-        'proveedor_id '
+        'proveedor_id'
     ];
 
     public static function boot()

@@ -96,17 +96,27 @@
                             <label for="proseso_id">Código Servicio</label>
                             <input type="text" id="proseso_id" name="proseso_id" value="{{ old('proseso_id', $tiempo_produccion->proseso_id) }}" readonly placeholder="Código del servicio">
                         </div>
+
+                        <div class="mb-4">
+                            <input type="number" step="0.1" id="valorServicio" value="{{ old('valorServicio', $valorServicio) }}" name="valorServicio" placeholder="valor del servicio" class="form-control border-black" readonly>
+                        </div>
         
                         <div class="mb-4">
-                            <label for="sdp_id">SDP</label>
+                            
                             <div class="">
-                                <button id="abrirModalSDP" type="button" class="btn btn-info">ver SDP</button>
-                            <input type="text" id="sdp_id" name="sdp_id" value="{{ old('sdp_id', $tiempo_produccion->sdp_id) }}" required placeholder="Número del SDP">
+                                <label for="sdp_id">SDP</label>
+                                <input type="text" id="sdp_id" name="sdp_id" value="{{ old('sdp_id', $tiempo_produccion->sdp_id) }}" required placeholder="Número del SDP">
                             </div>
                             
                             <label for="articulos_sdp">Items de SDP</label>
                             <div id="articulosContainer">
-                                <input type="text">
+                                <input 
+                                    type="text" 
+                                    id="articulo_id" 
+                                    name="articulo_id" 
+                                    value="{{ $articuloSelect }}" 
+                                    readonly 
+                                    placeholder="Descripción del artículo seleccionado">
                             </div>
                         </div>
                     </div>
@@ -136,6 +146,7 @@
                             <th>select</th>
                             <th>codigo</th>
                             <th>nombre</th>
+                            <th>valor</th>
                         </tr>
                     </thead>
                     <tbody id="serviciosTableBody">
@@ -144,10 +155,11 @@
                             <td>
                                 <input type="radio" name="proseso_select" id="proseso_select" 
                                 value="{{ $servicio->codigo }}" data-codigo="{{ $servicio->codigo }}" 
-                                data-nombre="{{ $servicio->nombre }}">
+                                data-nombre="{{ $servicio->nombre }}" data-valor="{{ $servicio->valor_hora }}">
                             </td>
                             <td>{{ $servicio->codigo }}</td>
                             <td>{{ $servicio->nombre }}</td>
+                            <td>{{ number_format($servicio->valor_hora, 2, ',', '.') }}</td>
                         </tr>
                         @endforeach
                     </tbody>
@@ -190,7 +202,7 @@
                             </td>
                             <td>{{ $sdp->numero_sdp }}</td>
                             <td>{{ $sdp->articulos->first()->descripcion }}</td>
-                            <td>{{ $sdp->clientes->nombre }}</td>
+                            <td>{{ $sdp->nombre }}</td>
                         </tr>
                         @endforeach
                     </tbody>
@@ -451,15 +463,18 @@
         const btnCerrarModal = modalServicios.querySelector('.cerrarModal');
         const inputNombre_servicio = document.getElementById('nombre_servicio');
         const inputProseso_id = document.getElementById('proseso_id');
+        const inputValorServicio = document.getElementById('valorServicio');
 
         btnSelectServicio.addEventListener('click', function() {
             const selectServicio = document.querySelector('input[name="proseso_select"]:checked');
             if (selectServicio) {
                 const codigo = selectServicio.dataset.codigo;
                 const nombre = selectServicio.dataset.nombre;
+                const valor = selectServicio.dataset.valor;
                 
                 inputProseso_id.value = codigo;
                 inputNombre_servicio.value = nombre;
+                inputValorServicio.value = valor;
                 
                 modalServicios.style.display = 'none';
             } else {
@@ -484,84 +499,95 @@
 </script>
 <script>
     $(document).ready(function() {
-        const baseUrl = '{{ url('/') }}';
-        const modalSdp = $('#modalSDP');
-        const btnAbrirModalSDP = $('#abrirModalSDP');
-        const btnSelectSDP = $('#selectSDP');
-        const btnCerrarModal = modalSdp.find('.cerrarModal');
-        const inputNumero_sdp = $('#sdp_id');
-        const articulosSelect = $('#articulos_sdp');
+    const baseUrl = '{{ url('/') }}';
+    const modalSdp = $('#modalSDP');
+    const btnAbrirModalSDP = $('#abrirModalSDP');
+    const btnSelectSDP = $('#selectSDP');
+    const btnCerrarModal = modalSdp.find('.cerrarModal');
+    const inputNumero_sdp = $('#sdp_id');
+    const articulosSelect = $('#articulos_sdp');
 
-        // Inicializar Select2 para selección múltiple
-        articulosSelect.select2({
-            placeholder: "Seleccione un artículo",
-            allowClear: true,
-            tags: true
-        });
+    // Inicializar Select2 para selección múltiple
+    articulosSelect.select2({
+        placeholder: "Seleccione un artículo",
+        allowClear: true,
+        tags: true
+    });
 
-        btnAbrirModalSDP.on('click', function() {
-            modalSdp.show();
-        });
+    btnAbrirModalSDP.on('click', function() {
+        modalSdp.show();
+    });
 
-        btnSelectSDP.on('click', function() {
-            const SDPSelect = $('input[name="SDP_select"]:checked');
-            if (SDPSelect.length) {
-                const codigo = SDPSelect.data('codigo');
-                inputNumero_sdp.val(codigo);
-                cargarArticulosSDP(SDPSelect.val());
-                modalSdp.hide();
-            } else {
-                alert('Por favor, seleccione un SDP.');
-            }
-        });
-
-        btnCerrarModal.on('click', function() {
+    btnSelectSDP.on('click', function() {
+        const SDPSelect = $('input[name="SDP_select"]:checked');
+        if (SDPSelect.length) {
+            const codigo = SDPSelect.data('codigo');
+            inputNumero_sdp.val(codigo);
+            cargarArticulosSDP(SDPSelect.val());
             modalSdp.hide();
-        });
-
-        function cargarArticulosSDP(sdpId) {
-            articulosSelect.empty().append(new Option("Cargando artículos...", "", false, false));
-            articulosSelect.prop('disabled', true);
-
-            fetch(`${baseUrl}/api/getArticulos/${sdpId}`)
-                .then(response => response.json())
-                .then(articulos => {
-                    articulosSelect.empty().append(new Option("Seleccione un artículo", "", false, false));
-
-                    if (articulos.length === 0) {
-                        articulosSelect.append(new Option("No hay artículos disponibles", "", false, false));
-                    } else {
-                        articulos.forEach(articulo => {
-                            const isSelected = {!! json_encode($tiempo_produccion->articulos->pluck('id')->toArray()) !!}.includes(articulo.id);
-                            const option = new Option(`${articulo.codigo} - ${articulo.descripcion}`, articulo.id, isSelected, isSelected);
-                            option.dataset.material = articulo.material;
-                            option.dataset.plano = articulo.plano;
-                            option.dataset.cantidad = articulo.pivot.cantidad;
-                            option.dataset.precio = articulo.pivot.precio;
-                            articulosSelect.append(option);
-                        });
-                    }
-                    articulosSelect.prop('disabled', false);
-                    articulosSelect.trigger('change');
-                })
-                .catch(error => {
-                    console.error('Error al cargar artículos:', error);
-                    articulosSelect.empty().append(new Option("Error al cargar artículos", "", false, false));
-                });
-        }
-
-        $(window).on('click', function(event) {
-            if ($(event.target).is(modalSdp)) {
-                modalSdp.hide();
-            }
-        });
-
-        // Inicializar la lista de artículos seleccionados si ya hay una SDP cargada
-        if (inputNumero_sdp.val()) {
-            cargarArticulosSDP(inputNumero_sdp.val());
+        } else {
+            alert('Por favor, seleccione un SDP.');
         }
     });
+
+    btnCerrarModal.on('click', function() {
+        modalSdp.hide();
+    });
+
+    function cargarArticulosSDP(sdpId) {
+        articulosSelect.empty().append(new Option("Cargando artículos...", "", false, false));
+        articulosSelect.prop('disabled', true);
+
+        fetch(`${baseUrl}/api/getArticulos/${sdpId}`)
+            .then(response => response.json())
+            .then(articulos => {
+                articulosSelect.empty().append(new Option("Seleccione un artículo", "", false, false));
+
+                
+                if (articulos.length === 0) {
+                    articulosSelect.append(new Option("No hay artículos disponibles", "", false, false));
+                } else {
+                    let index = 1;
+                    articulos.forEach(articulo => {
+                        console.log('Artículos cargados:', articulos);
+                        const isSelected = articulo.selected;
+                        const option = new Option(`${index}-${articulo.codigo} - ${articulo.descripcion}`, articulo.id, isSelected, isSelected);
+                        option.dataset.index = index;
+                        option.dataset.material = articulo.material;
+                        option.dataset.plano = articulo.plano;
+                        option.dataset.cantidad = articulo.pivot.cantidad;
+                        option.dataset.precio = articulo.pivot.precio;
+                        articulosSelect.append(option);
+                        
+                        if (isSelected) {
+                            agregarCampoIndice(articulo.id, index);
+                        }
+
+                        index++;
+                    });
+                }
+                articulosSelect.prop('disabled', false);
+                articulosSelect.trigger('change');
+            })
+            .catch(error => {
+                console.error('Error al cargar artículos:', error);
+                articulosSelect.empty().append(new Option("Error al cargar artículos", "", false, false));
+            });
+    }
+
+    $(window).on('click', function(event) {
+        if ($(event.target).is(modalSdp)) {
+            modalSdp.hide();
+        }
+    });
+
+    // Inicializar la lista de artículos seleccionados si ya hay una SDP cargada
+    if (inputNumero_sdp.val()) {
+        cargarArticulosSDP(inputNumero_sdp.val());
+    }
+});
 </script>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Función para manejar la apertura y cierre de modales
@@ -638,9 +664,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Inicialización de flatpickr para hora de inicio y fin
-            flatpickr("#hora_inicio", {
+        flatpickr("#hora_inicio", {
                 enableTime: true,
                 noCalendar: true,
                 dateFormat: "H:i:S",
@@ -656,69 +680,5 @@
                 enableSeconds: true,
                 minuteIncrement: 1,
             });
-    
-            const horaFinInput = document.getElementById('hora_fin');
-            const laboralDescanso = document.getElementById('laboral_descanso');
-            const decrementarBtn = document.getElementById('decrementar');
-            const incrementarBtn = document.getElementById('incrementar');
-            const minutosRestadosSpan = document.getElementById('minutos_restados');
-    
-            let tiempoOriginal = null;
-            let minutosRestados = 0;
-    
-            // Guardar la hora original de fin
-            function guardarTiempoOriginal() {
-                if (!tiempoOriginal && horaFinInput.value) {
-                    tiempoOriginal = horaFinInput.value;
-                }
-            }
-    
-            // Función para ajustar el tiempo
-            function ajustarTiempo(incremento) {
-                if (!laboralDescanso.checked) return;  // Solo ajustar si el checkbox está marcado
-    
-                guardarTiempoOriginal();
-    
-                minutosRestados += incremento;
-                minutosRestados = Math.max(minutosRestados, 0);  // No permitir valores negativos
-                minutosRestadosSpan.textContent = minutosRestados;
-    
-                if (!tiempoOriginal) return;
-    
-                let [horas, minutos, segundos] = tiempoOriginal.split(':').map(Number);
-                let totalSegundos = (horas * 3600) + (minutos * 60) + segundos - (minutosRestados * 60);
-    
-                totalSegundos = Math.max(totalSegundos, 0);  // Evitar valores negativos
-    
-                let nuevasHoras = Math.floor(totalSegundos / 3600) % 24;
-                let nuevosMinutos = Math.floor((totalSegundos % 3600) / 60);
-                let nuevosSegundos = totalSegundos % 60;
-    
-                let nuevaHoraFin = `${nuevasHoras.toString().padStart(2, '0')}:${nuevosMinutos.toString().padStart(2, '0')}:${nuevosSegundos.toString().padStart(2, '0')}`;
-                horaFinInput._flatpickr.setDate(nuevaHoraFin);
-            }
-    
-            // Restaurar la hora original al desmarcar el checkbox
-            laboralDescanso.addEventListener('change', function() {
-                if (!this.checked) {
-                    if (tiempoOriginal) {
-                        horaFinInput._flatpickr.setDate(tiempoOriginal);
-                    }
-                    minutosRestados = 0;
-                    minutosRestadosSpan.textContent = '0';
-                }
-            });
-    
-            // Listeners para los botones de incrementar y decrementar
-            decrementarBtn.addEventListener('click', function() {
-                ajustarTiempo(1);
-            });
-            
-            incrementarBtn.addEventListener('click', function() {
-                if (minutosRestados > 0) {
-                    ajustarTiempo(-1);
-                }
-            });
-        });
     </script>
 @stop

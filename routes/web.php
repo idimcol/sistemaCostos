@@ -40,6 +40,7 @@ use App\Http\Controllers\UsersController;
 use App\Http\Controllers\VendedorController;
 use App\Http\Controllers\servicioExternoController;
 use App\Http\Controllers\ServicioSdpController;
+use App\Http\Controllers\ServiciosExternosSdpController;
 use App\Http\Controllers\SolicitudServicioExternoController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -251,7 +252,8 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware('auth')->get('/perfil', [UsersController::class, 'show'])->name('perfil');
     Route::get('/profile', [UsersController::class, 'profile'])->name('profile.index');
     Route::put('/user/{id}/update', [UsersController::class, 'updateUser'])->name('user.update');
-
+    Route::post('/user/update/profile', [UsersController::class, 'updateProfile'])->name('user.update.profile');
+    Route::post('/user/update/password', [UsersController::class, 'updatePassword'])->name('user.update.password');
     // productos
 
     route::resource('productos', ProductosController::class);
@@ -284,4 +286,9 @@ Route::middleware(['auth'])->group(function () {
 
     // servocios Externos 
     Route::resource('serviciosExternos', servicioExternoController::class);
+
+    // subir servicios esternos a sdp
+    Route::get('/sdp-servicios-extrnos', [ServiciosExternosSdpController::class, 'index'])->name('servicios.sdp.lista');
+    Route::get('/subir-servicios-externos/{numero_sdp}/form', [ServiciosExternosSdpController::class, 'create'])->name('subirServicios.form');
+    Route::post('/subir-servicios-externos/{numero_sdp}', [ServiciosExternosSdpController::class, 'store'])->name('subirServicios');
 });

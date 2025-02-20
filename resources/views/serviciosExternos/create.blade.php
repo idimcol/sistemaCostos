@@ -24,8 +24,8 @@
             <form action="{{ route('serviciosExternos.store') }}" method="POST" class="max-w-sm mx-auto space-y-4">
                 @csrf
                 <div class="form-group">
-                    <label for="descripcion">Descripción</label>
-                    <input type="text" name="descripcion" id="descripcion" class="form-control" required>
+                    <label for="nombre">Descripción</label>
+                    <input type="text" name="nombre" id="nombre" class="form-control" required>
                 </div>
                 <div class="form-group">
                     <label for="proveedor">Proveedor</label>

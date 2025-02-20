@@ -19,6 +19,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Validate;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 
 class TiemposProduccionController extends Controller
 {
@@ -252,12 +253,26 @@ class TiemposProduccionController extends Controller
 
     public function edit(string $id)
     {
-        $tiempo_produccion = TiemposProduccion::with('articulos', 'sdp')->findOrFail($id);
+        $tiempo_produccion = TiemposProduccion::with('sdp.articulos', 'costosProduccion')->findOrFail($id);
         $servicios = Servicio::all();
         $sdps = SDP::with('clientes', 'articulos')->get();
         $operarioId = session('operativo_id');
 
-        return view('tiemposproduccion.edit', compact('tiempo_produccion', 'servicios', 'sdps'));
+        $valorServicio = $tiempo_produccion->servicio ? $tiempo_produccion->servicio->valor_hora : null;
+
+        $costosProduccion = $tiempo_produccion->costosProduccion;
+
+
+        $articuloSeleccionado = session('articulo_id');
+
+        // Si existe un artículo seleccionado en la sesión, obtener el artículo completo
+        $articulo = $tiempo_produccion->sdp->articulos ?? collect();
+
+        $articuloSelect = $costosProduccion->articulo;
+
+    // Si hay costos de producción y artículo relacionado
+
+        return view('tiemposproduccion.edit', compact('tiempo_produccion', 'articuloSeleccionado', 'articuloSelect', 'articulo', 'costosProduccion', 'servicios', 'sdps', 'operarioId', 'valorServicio'));
     }
 
     public function update(Request $request, $id)
@@ -274,7 +289,7 @@ class TiemposProduccionController extends Controller
             'sdp_id' => 'required|exists:sdps,numero_sdp',
             'nombre_operario' => 'required|string|max:255',
             'nombre_servicio' => 'required|string|max:255',
-            'articulos.articulo_id.*' => 'required|exists:articulos,id',
+            'articulo_id' => 'required'
         ]);
     
         DB::beginTransaction();
@@ -302,12 +317,34 @@ class TiemposProduccionController extends Controller
             Log::info('Tiempo de producción actualizado exitosamente', ['tiempos_produccion_id' => $tiempoProduccion->id]);
     
             // Calcular el valor total de horas y las horas
-            $total_horas = $tiempoProduccion->Calcularvalor_total_horas();
-            $horas = $tiempoProduccion->Calculartotalhoras();
+            $valor_servicio = $request->input('valorServicio');
+            $total_horas = $tiempoProduccion->Calcularvalor_total_horas($valor_servicio);
+            $horasTotales = $tiempoProduccion->Calculartotalhoras();
     
-            if ($total_horas === null || $horas === null) {
+            if ($total_horas === null || $horasTotales === null) {
                 throw new \Exception('Error al calcular valor total de horas o total de horas');
             }
+
+            $costosProduccion = CostosSdpProduccion::updateOrCreate(
+                [ 'tiempos_id' => $tiempoProduccion->id,],
+                [
+                'sdp_id' => $tiempoProduccion->sdp_id,
+                'operario' => $tiempoProduccion->nombre_operario,
+                'articulo' => $request->articulo_id,
+                'servicio' => $tiempoProduccion->nombre_servicio,
+                'cif_id' => 1,
+                'valor_sdp' => 0,
+                'horas' => 0,
+                'mano_obra_directa' => 0,
+                'materias_primas_indirectas' => 0,
+                'materias_primas_directas' => 0,
+                'costos_indirectos_fabrica' => 0,
+                'utilidad_bruta' => 0,
+                'margen_bruto' => 0
+                ]
+            );
+
+            $costosProduccion->calcularCostos($total_horas, $horasTotales);
     
             DB::commit();
     
@@ -315,7 +352,7 @@ class TiemposProduccionController extends Controller
             return redirect()->route('tiempos-produccion.operario', $tiempoProduccion->operativo_id)->with([
                 'success' => 'Tiempo de producción actualizado exitosamente.',
                 'valor_total_horas' => 'Valor total de horas: ' . $total_horas,
-                'total_horas' => 'Total de horas: ' . $horas,
+                'total_horas' => 'Total de horas: ' . $horasTotales,
             ]);
     
         } catch (\Exception $e) {
